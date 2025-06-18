@@ -1,0 +1,178 @@
+INFORME TÉCNICO - PRACTICA 2. Sesión 1 - Infraestructura y encaminamiento.
+
+Fecha: [18/03/2025]
+Elaborado por: [Jesika Jiménez y Gerard Chaparro Redondo]
+
+Link de Google Drive para acceder a las máquinas virtuales: https://drive.google.com/drive/u/3/folders/1APYnc8Iks0HcPggzClLMFPbVUyMvO1og
+
+1. INTRODUCCIÓN
+
+El informe trata sobre la configuración de dos routers virtuales en un entorno de red, con el propósito de permitir la comunicación entre diferentes segmentos de la red mediante direccionamiento estático y rutas estáticas.
+
+Los routers configurados son:
+
+"Router d'accés": Es el router que conecta la red interna con Internet.
+"Router intern": Se encarga de interconectar las subredes dentro de la organización.
+
+Se han realizado varias configuraciones clave en ambos routers:
+
+Configuración de interfaces de red con direcciones IP estáticas.
+Activación del encaminamiento IP para permitir el reenvío de paquetes.
+Configuración de rutas estáticas para garantizar la conectividad entre redes.
+
+
+2. CONFIGURACIÓN DE LAS INTERFACES DE RED
+
+Las interfaces de red son los puntos de conexión de un dispositivo con la red. En este caso, se configuran interfaces en los dos routers.
+
+2.1. Router d'accés
+
+Este router tiene dos interfaces de red:
+
+Adaptador 1 (eth-troncal): Conectado a Internet mediante un adaptador puente, lo que permite que la máquina virtual tenga acceso directo a la red física.
+
+Adaptador 2 (eth-dmz): Conectado a una red interna llamada "intnet", usada para la comunicación con el Router intern.
+Cada interfaz tiene una dirección MAC única que permite identificarla.
+
+- Se configuran dos interfaces de red:
+  - Adaptador 1: Conectado a "Adaptador puente" (acceso a Internet).
+    - Nombre: Realtek RTL8852AE WiFi 6 802.11ax PCIe Adapter.
+    - Dirección MAC: 080027000001.
+  - Adaptador 2: Conectado a "Red interna" (intnet).
+    - Nombre: intnet.
+    - Dirección MAC: 080027100101.
+
+2.2. Cambio de nombres de las interfaces
+
+Por defecto, los nombres de las interfaces de red pueden cambiar en cada reinicio del sistema. Para asegurarnos de que siempre usen los mismos nombres, se crea una regla en /etc/udev/rules.d/10-network.rules que asigna nombres personalizados basados en la dirección MAC.
+
+
+- Se crea un archivo en '/etc/udev/rules.d/10-network.rules' para renombrar las interfaces de red de forma permanente.
+- Contenido del archivo:
+
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="08:00:27:00:00:01", NAME="eth-troncal"
+SUBSYSTEM=="net", ACTION=="add", ATTR{address}=="08:00:27:10:01:01", NAME="eth-dmz"
+
+Esto garantiza que las interfaces siempre se llamen eth-troncal y eth-dmz, evitando problemas de configuración.
+
+- Se reinicia el sistema con 'reboot'.
+
+2.3. Asignación de direcciones IP
+
+Para que las interfaces de red funcionen correctamente, se les asignan direcciones IP en el archivo /etc/network/interfaces.
+
+- Se edita el archivo '/etc/network/interfaces' para asignar direcciones IP estáticas:
+
+auto eth-troncal
+iface eth-troncal inet dhcp
+
+auto eth-dmz
+iface eth-dmz inet static
+address 10.10.1.1
+netmask 255.255.255.240
+
+- Se reinicia el servicio de red con 'systemctl restart networking'.
+
+eth-troncal usa DHCP, lo que significa que obtiene una IP automáticamente de la red externa.
+eth-dmz usa IP estática para mantener siempre la misma dirección dentro de la red interna.
+
+2.4. Router intern
+
+- Se configura una interfaz de red:
+- Adaptador 1: Conectado a "Red interna" (intnet).
+  - Nombre: intnet.
+  - Dirección MAC: 080027100102.
+
+
+2.5. Asignación de direcciones IP en el Router intern
+- Se edita el archivo '/etc/network/interfaces':
+
+auto eth-dmz
+iface eth-dmz inet static
+address 10.10.1.2
+netmask 255.255.255.240
+
+auto eth-srv
+iface eth-srv inet static
+address 10.10.2.1
+netmask 255.255.255.240
+
+auto eth-cli
+iface eth-cli inet static
+address 10.10.3.1
+netmask 255.255.255.0
+
+- Se reinicia el servicio de red con 'systemctl restart networking'.
+
+3. ACTIVACIÓN DEL ENCAMINAMIENTO IP
+
+3.1. Habilitar el reenvío de paquetes
+- Se edita el archivo '/etc/sysctl.conf' para habilitar el reenvío de paquetes IPv4:
+
+net.ipv4.ip_forward=1
+
+- Se aplica la configuración con 'sysctl -p'.
+
+4. CONFIGURACIÓN DE RUTAS ESTÁTICAS
+
+4.1. Router d'accés
+- Se añaden rutas estáticas:
+
+ip route add 10.10.3.0/24 via 10.10.1.2
+ip route add 10.10.2.0/28 via 10.10.1.2
+
+- Para hacerlas permanentes, se edita '/etc/network/interfaces':
+
+up ip route add 10.10.2.0/28 via 10.10.1.2
+up ip route add 10.10.3.0/24 via 10.10.1.2
+
+- Se reinicia el servicio de red con 'systemctl restart networking'.
+
+4.2. Router intern
+
+- Se añade una ruta estática:
+
+ip route add default via 10.10.1.1
+
+- Para hacerla permanente, se edita '/etc/network/interfaces':
+
+up ip route add default via 10.10.1.1
+
+- Se reinicia el servicio de red con 'systemctl restart networking'.
+
+5. VERIFICACIÓN DE CONECTIVIDAD
+
+5.1. Desde el Router intern
+
+- Se verifica la conectividad con el Router d'accés:
+
+ping -c 4 10.10.1.1
+
+5.2. Desde el Router d'accés
+
+- Se verifica la conectividad con el Router intern:
+
+ping -c 4 10.10.1.2
+
+Si hay respuesta, los dos routers pueden comunicarse.
+
+
+¿Por qué configuramos las maquinas con esas direcciones IP en el "router intern" y en "el router d'acces"?
+
+En primer lugar, la red troncal utiliza una dirección IP asignada por DHCP, ya que representa la conexión con Internet y depende de la infraestructura externa. Esto permite que el "Router d’accés" obtenga dinámicamente su configuración de la red del proveedor de servicios.
+
+La red DMZ (10.10.1.0/28) se diseñó para alojar servidores accesibles tanto desde Internet como desde la red interna. Se optó por un máscara de /28 porque proporciona 14 direcciones utilizables, suficientes para los servidores DNS, SSH y el router que gestiona el tráfico entrante. La hemos configurado en el "Router d'acces" ya que es de donde se puede conectar a internet a traves de la red dmz. 
+
+La red de servidores internos (10.10.2.0/28) sigue la misma lógica de segmentación con un prefijo /28, lo que permite la conexión de servidores internos como el Nagios, asegurando que solo sean accesibles desde redes internas y no directamente desde Internet.
+
+Por otro lado, la red de clientes (10.10.3.0/24) emplea un prefijo más amplio (/24), ya que debe admitir múltiples dispositivos de usuario. Se eligió este tamaño para permitir una mayor escalabilidad y evitar problemas de falta de direcciones IP en el futuro.
+
+6. CONCLUSIÓN
+
+Tras realizar todos los pasos:
+
+Se han asignado direcciones IP a todas las interfaces.
+Se ha activado el encaminamiento IP para permitir el tráfico entre redes.
+Se han configurado rutas estáticas para garantizar la conectividad entre las diferentes subredes.
+Esto asegura que los clientes y servidores en la red interna puedan acceder a Internet y comunicarse entre sí correctamente.
+

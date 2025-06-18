@@ -1,0 +1,180 @@
+INFORME TÉCNICO - PRACTICA 2. Sesión 2 - Cortafuegos y NAT
+
+Fecha: [18/03/2025]
+Elaborado por: [Jesika Jiménez y Gerard Chaparro Redondo]
+
+Link de Google Drive para acceder a las maquinas virtuales: https://drive.google.com/drive/u/3/folders/1APYnc8Iks0HcPggzClLMFPbVUyMvO1og
+
+1. Introducción
+
+Este informe detalla la configuración del firewall y la configuración de NAT en los routers internos y de acceso de la red, siguiendo las directrices de seguridad establecidas para el escenario. Se han aplicado reglas tanto para IPv4 como para IPv6 y se han realizado pruebas para verificar la operatividad de las configuraciones implementadas.
+
+2. Directrices de Seguridad para la Configuración del Firewall
+
+2.1. Reglas Generales
+Las reglas generales son aplicadas a toda la infraestructura y son fundamentales para la operatividad básica de la red. Una de las primeras reglas especifica que todos los dispositivos deben poder realizar pings entre ellos, lo que es crucial para la conectividad básica y la comprobación de la disponibilidad de los equipos. Además, se restringe el uso de servidores DNS, limitando su acceso a los servidores de la DMZ, pero excluyendo a los servidores DNS1 y DNS2, los cuales son esenciales para la resolución de nombres.
+
+Para simular el servidor dns hemos utilizado tcdump, nmap y netcat.
+
+2.3. Red DMZ
+
+La red DMZ es una zona especialmente controlada, donde solo los servidores DNS (DNS1 y DNS2) son accesibles desde el exterior. Estos servidores son configurados para aceptar únicamente peticiones de DNS y conexiones SSH, tanto internas como externas. Esta segmentación de la DMZ asegura que los servicios expuestos a Internet estén estrictamente controlados, minimizando el riesgo de accesos no autorizados.
+
+2.4. Monitores
+
+En el caso de los monitores, se implementa una restricción aún más rigurosa. Solo los monitores tienen acceso al servicio SSH del resto de los equipos, garantizando que el acceso a la infraestructura de administración esté restringido a dispositivos específicos. Además, las mismas reglas de acceso para servicios externos se aplican aquí, lo que implica que solo se permiten conexiones de respuesta a solicitudes previas.
+
+2.5. Firewall
+
+El firewall se configura con el objetivo de maximizar la seguridad de la red. Esto incluye el control detallado de los paquetes aceptados y rechazados, lo que permite monitorear el tráfico de la red y detectar posibles intentos de intrusión. Además, se configura un registro para los accesos SSH, diferenciando entre intentos desde direcciones IP permitidas y aquellas no autorizadas. Esto añade una capa adicional de monitoreo y control sobre los accesos remotos a los equipos de la red.
+
+3. Configuración del Firewall
+
+3.1. Router Interno
+
+En el router interno, se realiza una configuración detallada del firewall utilizando nftables, la cual incluye la creación de una nueva tabla de filtrado para garantizar que las configuraciones previas no interfieran con las nuevas políticas. Se define una política predeterminada de "drop" (descartar) para las cadenas input, forward y output, lo que significa que, por defecto, todo el tráfico será bloqueado a menos que se indique lo contrario.
+
+Una de las primeras acciones es permitir los pings entre las interfaces locales y desde la DMZ, la red de servidores y la red de clientes. Esto asegura que la conectividad básica se mantenga sin comprometer la seguridad. Además, se establece un acceso SSH restringido, permitiendo solo a direcciones IP específicas realizar conexiones SSH al router interno. Esta medida limita el acceso a los administradores autorizados, protegiendo el equipo de accesos no deseados.
+
+Otra regla importante es la de permitir el tráfico "establecido" y "relacionado", lo cual es crucial para garantizar que las respuestas a solicitudes previamente hechas no sean bloqueadas. Finalmente, cualquier tráfico no permitido es registrado y bloqueado, lo que proporciona un seguimiento detallado de posibles intentos de intrusión.
+
+A continuación, podemos ver la implementación del firewall del router interno que hemos utilizado:
+
+# Eliminar la tabla filter existente (si existe) para evitar conflictos previos
+nft delete table inet filter 2>/dev/null
+
+# Crear la tabla inet filter para reglas de filtrado de paquetes
+nft add table inet filter
+
+# Añadir las cadenas input, forward y output con política predeterminada de "drop" (descartar)
+nft add chain inet filter input { type filter hook input priority 0\; policy drop\; }
+nft add chain inet filter forward { type filter hook forward priority 0\; policy drop\; }
+nft add chain inet filter output { type filter hook output priority 0\; policy drop\; }
+
+# Reglas para la cadena input (entrada)
+# Permitir ping (ICMP echo-request) a las interfaces locales del firewall
+nft add rule inet filter input ip daddr 10.10.1.2 icmp type echo-request accept  # Interface eth-dmz
+nft add rule inet filter input ip daddr 10.10.2.1 icmp type echo-request accept  # Interface eth-srv
+nft add rule inet filter input ip daddr 10.10.3.1 icmp type echo-request accept  # Interface eth-cli
+
+# Permitir ping desde redes específicas
+nft add rule inet filter input iifname "eth-dmz" ip protocol icmp accept         # Desde la DMZ
+nft add rule inet filter input iifname "eth-srv" ip protocol icmp accept         # Desde la red de servidores
+nft add rule inet filter input iifname "eth-cli" ip protocol icmp accept         # Desde la red de clientes
+
+# Permitir acceso SSH solo desde direcciones IP específicas dentro de las redes autorizadas
+nft add rule inet filter input ip saddr { 10.10.1.11, 10.10.2.11, 10.10.3.11 } tcp dport 22 accept
+
+# Permitir tráfico establecido y relacionado
+nft add rule inet filter input ct state established,related accept
+
+# Registrar y descartar tráfico no permitido en input
+nft add rule inet filter input log prefix "DROP INPUT: " drop
+
+# Reglas para la cadena forward (reenvío)
+# Permitir tráfico establecido y relacionado
+nft add rule inet filter forward ct state established,related accept
+
+# Permitir ping entre las diferentes redes internas
+nft add rule inet filter forward ip saddr { 10.10.1.0/28, 10.10.2.0/28, 10.10.3.0/24 } ip protocol icmp accept
+
+# Permitir tráfico DNS solo desde los servidores DNS (10.10.1.3 y 10.10.1.4)
+nft add rule inet filter forward ip saddr { 10.10.1.3, 10.10.1.4 } udp dport 53 accept
+
+# Registrar y descartar tráfico no permitido en forward
+nft add rule inet filter forward log prefix "DROP FORWARD: " drop
+
+# Reglas para la cadena output (salida)
+# Permitir tráfico ICMP de salida (ping)
+nft add rule inet filter output ip protocol icmp accept
+
+# Permitir tráfico establecido y relacionado
+nft add rule inet filter output ct state established,related accept
+
+# Registrar y descartar tráfico no permitido en output
+nft add rule inet filter output log prefix "DROP OUTPUT: " drop
+
+# Mostrar la configuración aplicada para verificar las reglas establecidas
+echo "Configuración aplicada:"
+nft list ruleset
+
+
+3.2. Router de Acceso
+
+El router de acceso tiene una configuración similar, con las mismas medidas de seguridad básicas para garantizar la protección de la red. Se utilizan cadenas input, forward y output con políticas de "drop" por defecto, y se permite el ping desde la red troncal y la DMZ para asegurar la conectividad entre las diferentes redes. De igual manera, se permite el acceso SSH solo desde direcciones IP autorizadas y se permite el tráfico establecido y relacionado, asegurando que las respuestas a solicitudes legítimas no sean bloqueadas.
+
+El registro de tráfico no permitido en las cadenas input, forward y output permite monitorear y analizar cualquier intento de acceso no autorizado o tráfico malicioso que intente atravesar el firewall. Esto es clave para detectar intrusiones y responder rápidamente ante posibles amenazas.
+
+A continuación, mostramos la tabla que hemos hecho para implementar el firewall del router de acceso.
+
+nft flush ruleset
+
+# Crear la tabla inet filter
+nft add table inet filter
+
+# Afegir les cadenes input, forward i output
+nft add chain inet filter input { type filter hook input priority 0\; policy drop\; }
+nft add chain inet filter forward { type filter hook forward priority 0\; policy drop\; }
+nft add chain inet filter output { type filter hook output priority 0\; policy drop\; }
+
+# Añadir reglas a la cadena input
+nft add rule inet filter input ip daddr 10.10.1.1 icmp type echo-request accept  # Permite ping a la propia interfaz eth-dmz
+
+
+nft add rule inet filter input iifname "eth-troncal" ip protocol icmp accept     # Permite ping desde la red troncal
+nft add rule inet filter input iifname "eth-dmz" ip protocol icmp accept        # Permite ping desde la DMZ
+
+nft add rule inet filter input ip saddr { 10.10.1.11, 10.10.2.11, 10.10.3.11 } tcp dport 22 accept  # Permite SSH desde les redes permitidas
+nft add rule inet filter input ct state established,related accept               # Permite transito establecido i relacionado
+nft add rule inet filter input log prefix "DROP INPUT: " drop                    # Registrar y descartar transito no permitido
+
+# Añadir reglas a la cadena forward
+nft add rule inet filter forward ct state established,related accept             # Permite transito establecido y relacionado
+nft add rule inet filter forward ip saddr { 10.10.1.0/28, 10.10.2.0/28, 10.10.3.0/24 } ip protocol icmp accept  # Permitir ping entre redes
+nft add rule inet filter forward ip saddr { 10.10.1.3, 10.10.1.4 } udp dport 53 accept  # Permitir transito DNS desde DNS1 y DNS2
+nft add rule inet filter forward log prefix "DROP FORWARD: " drop                # Registrar y descartar transito no permitido
+
+# Añadir reglas a la cadena output
+nft add rule inet filter output ip protocol icmp accept                         # Permite transito ICMP (ping) saliente
+nft add rule inet filter output ct state established,related accept             # Permite transito establecido y relacionado
+nft add rule inet filter output log prefix "DROP OUTPUT: " drop                 # Registrar y descartar transito no permitido
+
+# Mostrar la configuración aplicada
+echo "Configuració aplicada:"
+nft list ruleset
+
+5. Configuración del NAT
+
+El Network Address Translation (NAT) es fundamental para permitir que los dispositivos internos accedan a servicios fuera de la red, como Internet, sin exponer directamente sus direcciones IP internas. En este caso, se ha configurado el NAT en la tabla nat de nftables con las cadenas prerouting y postrouting para controlar el flujo de tráfico que entra y sale de la red.
+
+Una de las configuraciones más relevantes es la implementación de un balanceo de carga para las solicitudes DNS entrantes. A través de la configuración de NAT, se asegura que las peticiones DNS sean distribuidas equitativamente entre los dos servidores DNS disponibles (DNS1 y DNS2), lo que mejora la disponibilidad y confiabilidad del servicio. Esta configuración utiliza reglas de redirección de puertos (DNAT) para que las solicitudes de DNS se dirijan a uno u otro servidor dependiendo de un algoritmo de carga balanceada.
+
+Otra configuración importante es la redirección de puertos SSH desde el exterior. Los puertos 223 y 224 son redirigidos a los servidores DNS1 y DNS2, respectivamente, para permitir el acceso SSH de manera segura a los servidores desde el exterior, pero de forma controlada.
+
+Finalmente, se implementa la regla de "masquerade" en el postrouting, que asegura que el tráfico saliente de las redes internas se traduzca a la dirección IP del router de acceso, permitiendo que todos los dispositivos internos compartan una única dirección IP pública cuando acceden a Internet.
+
+Podemos ver implementada la tabla con las respectivas configuraciones siguientes:
+
+nft add table ip nat
+
+nft add chain ip nat prerouting { type nat hook prerouting priority dstnat \; policy accept \; }
+nft add chain ip nat postrouting { type nat hook postrouting priority -100 \; policy accept \; }
+
+# Reglas para balanceo de carga de DNS (UDP y TCP) en eth-troncal
+nft add rule ip nat prerouting iif "eth-troncal" udp dport 53 numgen random mod 2 0 dnat to 10.10.1.3:53
+nft add rule ip nat prerouting iif "eth-troncal" udp dport 53 numgen random mod 2 1 dnat to 10.10.1.4:53
+nft add rule ip nat prerouting iif "eth-troncal" tcp dport 53 numgen random mod 2 0 dnat to 10.10.1.3:53
+nft add rule ip nat prerouting iif "eth-troncal" tcp dport 53 numgen random mod 2 1 dnat to 10.10.1.4:53
+
+# Reglas de redirección de puertos SSH
+nft add rule ip nat prerouting iif "eth-troncal" tcp dport 223 dnat to 10.10.1.3:22
+nft add rule ip nat prerouting iif "eth-troncal" tcp dport 224 dnat to 10.10.1.4:22
+
+# Reglas de postrouting con masquerade
+nft add rule ip nat postrouting oif "eth-troncal" ip saddr { 10.10.2.0/28, 10.10.3.0/24 } masquerade
+nft add rule ip nat postrouting oif "eth-troncal" ip saddr { 10.10.1.0/28, 10.10.2.0/28, 10.10.3.0/24 } masquerade
+
+
+7. Conclusiones
+
+La configuración del firewall y del NAT implementada en los routers internos y de acceso sigue las directrices de seguridad establecidas, logrando una segmentación adecuada de la red y protegiendo tanto los servicios internos como el acceso a Internet. Las pruebas realizadas han confirmado que las reglas de filtrado y NAT funcionan correctamente, permitiendo la conectividad necesaria sin comprometer la seguridad. La implementación del registro de tráfico y el monitoreo detallado de las conexiones permiten un control efectivo sobre los accesos a la red, asegurando que solo los dispositivos y servicios autorizados puedan interactuar con los sistemas internos y externos.

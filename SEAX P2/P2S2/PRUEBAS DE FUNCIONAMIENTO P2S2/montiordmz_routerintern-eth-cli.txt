@@ -1,0 +1,7 @@
+comanda ejecutada: root@monitordmz: ping 10.10.3.1
+
+PING 10.10.3.1 (10.10.3.1) 56(84) bytes of data.
+
+--- 10.10.3.1 ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3056ms
+

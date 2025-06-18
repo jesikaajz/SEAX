@@ -1,0 +1,24 @@
+root@monitorcli:/mnt/shared# ssh entel@10.10.1.3
+The authenticity of host '10.10.1.3 (10.10.1.3)' can't be established.
+ED25519 key fingerprint is SHA256:IT6CDsH27KDVU6k04H2AgUnHMH60Mlx3mLrXH3Z1uQ.
+This host key is known by the following other names/addresses:
+~/.ssh/known_hosts:1 [hashed name]
+~/.ssh/known_hosts:2 [hashed name]
+~/.ssh/known_hosts:3 [hashed name]
+
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '10.10.1.3' (ED25519) to the list of known hosts.
+entel@10.10.1.3's password:
+Linux seax2 6.1.0-31-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.128-1 (2025-02-07) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Feb 20 00:01:12 2025
+entel@seax2:~$ exit
+cerrar sesión
+Connection to 10.10.1.3 closed.
+root@monitorcli:/mnt/shared#
