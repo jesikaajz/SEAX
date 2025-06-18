@@ -1,0 +1,145 @@
+Script iniciado en 2025-05-29 19:07:56+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server_vpn:/etc/openvpn# cat ca.crt
+-----BEGIN CERTIFICATE-----
+MIIDNjCCAh6gAwIBAgIUceHwIJ1T61UbeFeuwj5XO4kphzAwDQYJKoZIhvcNAQEL
+BQAwDzENMAsGA1UEAwwEc2VheDAeFw0yNTA1MjgxNzI4NTBaFw0zNTA1MjYxNzI4
+NTBaMA8xDTALBgNVBAMMBHNlYXgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQCefC25eb9qHcLB/n9vaofKxmxZvOpPehPxfNXWv6m5LywHEfFS1atBqd5k
+KZZnp4VthZz6LpvfX2ZYqf72em+uiV+QWvHZeoXKPVF6DwyqBgZqEKthoH3TKQW6
+20obbprsEbiG9y13LxO8Mwj1/0qAjj+/UNBUQ5ou2WPaH60IVBAFyoEPfxlV9SJN
+Mni/GTdyf0YXhNUwdzvoK6u1GJFtE/29TKDr4nn0GAwc5OjOLDeIehkNBkrRZdf1
+YgEKJSWPpJACT7sraJC5E8UoMLD3/QayyKfbo/7kpBjije+pk5E3Olr8FfG6kAfw
+Zs0HOvDtSX+5Rh1htaUMEYfg6FHLAgMBAAGjgYkwgYYwDAYDVR0TBAUwAwEB/zAd
+BgNVHQ4EFgQUJzubtQyXsfPb4uU65IV9y+/XfWUwSgYDVR0jBEMwQYAUJzubtQyX
+sfPb4uU65IV9y+/XfWWhE6QRMA8xDTALBgNVBAMMBHNlYXiCFHHh8CCdU+tVG3hX
+rsI+VzuJKYcwMAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAQEAHVPgkvHI
+m/ZZ4F4CR1R8rLRy8kVWBPpCGrKaaEZf1FjVhpzQucWK5BNidseslaaWz0afKGTO
+Y8gI51DX8teKoU0CHxrRo6A4x5WESOSx6iTq2nnR49o3XBCnOIOS63jat9fnbP5A
+rr2nAERiUX6KaRzEP+nkS48cVN9LhXRBc0RGNEnhNZJ7U9egbljEQZMCmxlMIPnc
+cK670T4PKY+gmr4n/Su9FsldjTiIvXhpuaI8Ifi9nvRC9kWi0ABHHyVORk69zZO2
+XGri9/x2pTTeQKtuVDqN7LGzDliVwpkD7BF2fU2qJKrUJTx9Ybj31bpzCMsok6wp
+H55ObtmPlDmr1Q==
+-----END CERTIFICATE-----
+
+root@server_vpn:/etc/openvpn# cat dh.pem
+-----BEGIN DH PARAMETERS-----
+MIIBCAKCAQEAwv4eElKflxERCXoJROFyMSLfRnTaBLOYxxov+HvvN8KCopRVuKUD
+jlhiXmgQpJiClv/zmwL6/MSPNHKG39OGjQeL5OFDm4vQCETIqb+QQg/ECU7WoAc8
+vbdsl0tloPWZdZQ/Y0X6kyNnZOvDscbslDf0JPAx/u+DsEWvQImAH+LmUonwmFXs
+tEh9ykg+Nh/fzLI/Ntq6Nfvrr9zzvm9+Iw1MYWWEspvc4z1O3X9SnRMZvu+FEgtG
+iAW0JZEa9N7Ca9rPM89tKOduUpvGaj1y21HOKECnVF3SaOa1wmotuuiNT3A38QnV
+kudZnWW7CALTkSturSu5jpCzliDi4it8FwIBAg==
+-----END DH PARAMETERS-----
+
+root@server_vpn:/etc/openvpn# cat server.crt
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            a9:94:28:bb:f4:30:f1:4b:d7:3b:c0:b4:32:57:24:ff
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=seax
+        Validity
+            Not Before: May 28 17:29:35 2025 GMT
+            Not After : Aug 31 17:29:35 2027 GMT
+        Subject: CN=seax
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:ac:07:95:3b:4a:97:65:cc:dd:e3:54:e9:e5:e3:
+                    98:62:a6:e7:24:03:d8:f0:6a:3f:71:a4:a6:d3:d5:
+                    8f:bb:b4:74:33:9f:fa:8b:72:78:84:a1:b4:a8:39:
+                    e1:cb:a9:de:bc:90:cc:47:0b:c7:59:93:f5:e0:5b:
+                    74:96:5c:8a:62:45:6f:49:15:8c:a6:d0:28:e4:e1:
+                    5b:07:7a:13:8d:89:9c:bd:3b:5f:68:ab:84:56:0a:
+                    f5:15:0e:d8:47:7f:02:b6:93:55:28:ab:6b:99:4c:
+                    16:ea:7e:55:87:f4:a5:c5:e8:25:f7:82:89:f4:cc:
+                    cc:6b:db:ac:3d:f9:3f:6e:04:f6:0c:6b:65:8a:b3:
+                    1d:42:20:87:a3:1f:15:27:6b:5d:fd:d4:09:63:ad:
+                    dc:67:e2:43:40:16:aa:13:69:97:00:fb:27:ee:2c:
+                    69:0b:da:3a:94:d2:1c:07:71:02:04:f1:d6:bb:60:
+                    64:05:59:4a:21:fd:8e:1a:70:10:2e:12:51:69:96:
+                    11:ac:e9:4e:51:77:0f:f4:77:54:95:83:92:71:e5:
+                    21:99:3e:7d:d6:66:45:c7:68:ec:bd:c5:ed:52:e6:
+                    fb:fd:54:f7:87:61:4f:b5:d3:4c:f7:31:3f:87:50:
+                    3e:a3:3c:c6:e9:df:47:f8:25:21:02:9b:84:e1:f2:
+                    16:a3
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                74:E4:D5:84:A7:8D:A4:38:22:FF:4D:37:0D:1F:24:8C:31:75:03:D0
+            X509v3 Authority Key Identifier: 
+                keyid:27:3B:9B:B5:0C:97:B1:F3:DB:E2:E5:3A:E4:85:7D:CB:EF:D7:7D:65
+                DirName:/CN=seax
+                serial:71:E1:F0:20:9D:53:EB:55:1B:78:57:AE:C2:3E:57:3B:89:29:87:30
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                DNS:seax
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        5e:65:a8:ad:cf:5b:5f:50:f3:02:00:b4:0f:3e:2f:67:3a:87:
+        c5:27:7d:02:ef:ac:08:f2:e0:ae:2c:b7:06:83:16:f0:a9:c0:
+        ec:82:e1:54:45:ce:44:e7:4d:d3:81:19:d1:c1:27:1f:72:1e:
+        b6:6f:2d:2c:a8:42:fd:40:b5:08:20:ca:85:50:69:bf:8b:8b:
+        c9:22:e5:e7:be:74:02:d8:e6:89:1e:ee:33:4e:18:7f:3d:8d:
+        b3:7e:4b:58:9c:d7:e2:b0:2b:bc:26:4f:8f:23:c1:69:ef:20:
+        f8:4e:0d:64:f0:1f:85:40:05:a5:83:e1:66:51:80:12:2e:cb:
+        44:fa:75:ad:17:c5:20:1e:cf:48:ae:8d:95:cc:dc:2b:05:e7:
+        55:7e:7b:c6:62:65:ca:a1:5b:7d:4c:48:c8:62:77:e0:19:1a:
+        9a:97:cd:ce:fb:43:ee:14:94:54:b5:5b:34:b6:56:bd:be:f0:
+        bc:fc:9d:22:d6:25:e7:65:b8:dd:dd:11:e6:7e:52:da:76:6a:
+        74:75:29:ef:9c:06:55:32:ad:ae:50:fa:97:d1:8a:a8:ef:df:
+        ff:6e:34:99:96:32:f4:4e:7e:98:38:4f:93:f8:59:c1:0c:c6:
+        a3:7e:c7:17:38:1e:87:ca:77:23:f8:02:d2:22:b9:21:7a:c4:
+        69:b4:7b:7d
+-----BEGIN CERTIFICATE-----
+MIIDVjCCAj6gAwIBAgIRAKmUKLv0MPFL1zvAtDJXJP8wDQYJKoZIhvcNAQELBQAw
+DzENMAsGA1UEAwwEc2VheDAeFw0yNTA1MjgxNzI5MzVaFw0yNzA4MzExNzI5MzVa
+MA8xDTALBgNVBAMMBHNlYXgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQCsB5U7SpdlzN3jVOnl45hipuckA9jwaj9xpKbT1Y+7tHQzn/qLcniEobSoOeHL
+qd68kMxHC8dZk/XgW3SWXIpiRW9JFYym0Cjk4VsHehONiZy9O19oq4RWCvUVDthH
+fwK2k1Uoq2uZTBbqflWH9KXF6CX3gon0zMxr26w9+T9uBPYMa2WKsx1CIIejHxUn
+a1391Aljrdxn4kNAFqoTaZcA+yfuLGkL2jqU0hwHcQIE8da7YGQFWUoh/Y4acBAu
+ElFplhGs6U5Rdw/0d1SVg5Jx5SGZPn3WZkXHaOy9xe1S5vv9VPeHYU+100z3MT+H
+UD6jPMbp30f4JSECm4Th8hajAgMBAAGjgawwgakwCQYDVR0TBAIwADAdBgNVHQ4E
+FgQUdOTVhKeNpDgi/003DR8kjDF1A9AwSgYDVR0jBEMwQYAUJzubtQyXsfPb4uU6
+5IV9y+/XfWWhE6QRMA8xDTALBgNVBAMMBHNlYXiCFHHh8CCdU+tVG3hXrsI+VzuJ
+KYcwMBMGA1UdJQQMMAoGCCsGAQUFBwMBMAsGA1UdDwQEAwIFoDAPBgNVHREECDAG
+ggRzZWF4MA0GCSqGSIb3DQEBCwUAA4IBAQBeZaitz1tfUPMCALQPPi9nOofFJ30C
+76wI8uCuLLcGgxbwqcDsguFURc5E503TgRnRwScfch62by0sqEL9QLUIIMqFUGm/
+i4vJIuXnvnQC2OaJHu4zThh/PY2zfktYnNfisCu8Jk+PI8Fp7yD4Tg1k8B+FQAWl
+g+FmUYASLstE+nWtF8UgHs9Iro2VzNwrBedVfnvGYmXKoVt9TEjIYnfgGRqal83O
++0PuFJRUtVs0tla9vvC8/J0i1iXnZbjd3RHmflLadmp0dSnvnAZVMq2uUPqX0Yqo
+79//bjSZljL0Tn6YOE+T+FnBDMajfscXOB6Hyncj+ALSIrkhesRptHt9
+-----END CERTIFICATE-----
+
+root@server_vpn:/etc/openvpn# cat server.key
+-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCsB5U7SpdlzN3j
+VOnl45hipuckA9jwaj9xpKbT1Y+7tHQzn/qLcniEobSoOeHLqd68kMxHC8dZk/Xg
+W3SWXIpiRW9JFYym0Cjk4VsHehONiZy9O19oq4RWCvUVDthHfwK2k1Uoq2uZTBbq
+flWH9KXF6CX3gon0zMxr26w9+T9uBPYMa2WKsx1CIIejHxUna1391Aljrdxn4kNA
+FqoTaZcA+yfuLGkL2jqU0hwHcQIE8da7YGQFWUoh/Y4acBAuElFplhGs6U5Rdw/0
+d1SVg5Jx5SGZPn3WZkXHaOy9xe1S5vv9VPeHYU+100z3MT+HUD6jPMbp30f4JSEC
+m4Th8hajAgMBAAECggEAMt2jIH7zuSQUT82hw1nCixjyq1F/6cZgsAeRVH2HHGdF
+HKam/GiCfiUaN8u1mfTGaVcfL7qp3TDEuOwR0wvV1yzUtPVsOz69eL+xnMpZ0bXo
+5IMTuO1OGervgKR9CtbhRH7X5Uiabh9zfy6Pt7187sGvyDmO9RVBNHsluMVkHfFZ
+aXlW0gF0joTO+R+3GIYlg9yjGwa3qkE9F1AqyKYXEURYD8DcvPIm+JbY0R/ackbm
+mJjbS3wFEHP2o3v3W/AAChT6gkdy/qez8Qgt4rjIJ8C8maePRBFCdflZUBtXgTPT
+RwIl8NaRJN4zYEiGdbEs/jFVn7K2GZqG7Fw3kFYO8QKBgQDZXisQsuxlrMY8ORCo
+ugfmMbMzWMTemB5a88oTI9U7sSiinmwXmcUVFnC8fWzw9Z3i4FJxWHQE9WkVc4Bw
+6LrbNSt5ptET7PJUYAWLVScAACsNXdRtKbdh0nOxiLBwIQrbBileRBy2dnsd4+Lx
+Y4d20zXZXZmMQiJcj8kaoSQw1QKBgQDKmpwrXpOBIOusb4r/wGpj0ov2oAKcg5Rb
+Yj0vOEfRFPZpCfxXf62TDgLe3aG7DjNPad7/fEMjqkfpxVAhKUpN1M8lp20ar2oy
+...
+-----END PRIVATE KEY-----
+
+root@server_vpn:/etc/openvpn# ls
+ca.crt  client  dh.pem  easy-rsa  openvpn-status.log  server  server_achivos.txt  server.conf  server.crt  server.key  ta.key  update-resolv-conf
+

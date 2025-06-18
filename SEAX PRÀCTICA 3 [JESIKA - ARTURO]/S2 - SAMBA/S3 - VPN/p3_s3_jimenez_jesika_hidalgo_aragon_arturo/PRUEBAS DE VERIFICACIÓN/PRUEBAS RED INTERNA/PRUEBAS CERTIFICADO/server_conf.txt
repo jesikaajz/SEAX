@@ -1,0 +1,32 @@
+Script iniciado en 2025-05-29 20:34:00+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server_vpn:/mnt/shared# cat /etc/openvpn/server.conf
+
+mode server
+port 1194
+proto udp
+dev tun
+topology subnet
+
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/server.crt
+key /etc/openvpn/server.key
+dh /etc/openvpn/dh.pem
+
+push "route 10.4.1.0 255.255.255"
+tls-auth /etc/openvpn/ta.key 0
+server 10.4.1.0 255.255.255.0
+ifconfig 10.4.1.1 10.4.1.2
+persist-key
+persist-tun
+keepalive 10 120
+cipher AES-256-CBC
+data-ciphers AES-256-GCM:AES-256-CBC
+user nobody
+group nogroup
+status openvpn-status.log
+verb 3
+root@seax2:/mnt/shared# exit
+
+exit
+
+Script terminado en 2025-05-29 20:34:13+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

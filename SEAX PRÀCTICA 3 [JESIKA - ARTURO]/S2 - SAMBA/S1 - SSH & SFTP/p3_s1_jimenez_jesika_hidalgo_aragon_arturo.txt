@@ -1,0 +1,940 @@
+ALUMNES: Arturo Aragón Hidalgo, Jesika Jiménez Prado
+GRUP: |5012
+
+
+DOCUMENTACIÓ PRÀCTICA 3 - SESSIÓ 1
+—--------------------------------------------------------
+
+Per desenvolupar aquesta pràctica, el que hem fet és posar la configuració en xarxa interna per poder fer ssh/sftp des del client/servidor. Els paquets necessaris els he anat descarregant canviant de xarxa interna a NAT.
+
+***JOHN THE RIPPER***
+
+Per instal·lar John the Ripper, hem de considerar que el nostre sistema operatiu (Debian 12) en ser modern, necessitarà que instal·lem a la màquina John the Ripper Jumbo. Per això, necessitarem instal·lar-lo amb les comandes següents:
+
+~$ sudo apt install build-essential git zlib1g-dev libssl-dev #instal·la dependències necessàries
+
+~$ sudo apt install libssl-dev libbz2-dev zlib1g-dev libgmp-dev libomp-dev #instal·la dependències necessàries 
+
+~$ git clone https://github.com/openwall/john.git #clona el repositori de github on es troben els fitxers necessaris per instal·lar John the Ripper
+
+En executar aquestes comandes, se'ns generarà un directori john/src. Posteriorment, a la carpeta de john/src farem la configuració de John The Ripper, per a això executarem les comandes següents:
+
+~$ ./configure 
+~$ make clean && make -j1
+
+I una vegada tenim els fitxers compilats, executarem el programa des de la carpeta john/run, per això farem el següent:
+
+~$ ./john contra.txt
+
+Si volem fer servir un diccionari hem d'utilitzar la comanda següent:
+~$ ./john --wordlist=diccionari.txt contra.txt
+
+Per executar el programa, primer necessitem tenir el fitxer amb les contrasenyes hasheadas de les màquina i per això el que farem serà generar el fitxer amb les contrasenyes utilitzant la comanda:
+unshadow /etc/passwd /etc/shadow > contra.txt
+Unifiquem el contingut dels fitxers /etc/passwd i /etc/shadow usant l'eina unshadow, que genera un fitxer anomenat contra.txt amb els hashes de les contrasenyes.
+I a partir d'aquest fitxer podem craquejar les contrasenyes amb John the Ripper.
+Aquest fitxer el movem a la carpeta john/run i executem:
+~$ ./john contra.txt
+Després executarem:
+~$ ./john contra.txt --show # per veure les contrasenyes craquejades
+Aquest procés permet identificar contrasenyes febles o fàcilment crackeables, cosa que indica una mala política de seguretat. Si John the Ripper aconsegueix desxifrar diverses contrasenyes ràpidament, significa que els usuaris estan usant contrasenyes insegures.
+Que una contrasenya sigui crackeable significa que pot ser desxifrada o endevinada per un atacant utilitzant eines com John the Ripper.
+I posteriorment executarem:
+
+~$ ./john --wordlist=diccionari.txt contra.txt
+
+L'ús de diccionaris simula atacs de diccionari reals, on els atacants proven contrasenyes comunes i febles. Si John the Ripper pot desxifrar contrasenyes ràpidament amb aquest mètode, es demostra que aquestes contrasenyes no són segures. Això permet prendre mesures correctives, com ara exigir contrasenyes més complexes o implementar polítiques de contrasenyes més estrictes.
+
+***PROVES DE FUNCIONAMENT***
+Fitxer: pruebas_john_the_ripper.txt 
+Es van fer proves en un entorn Debian 12 utilitzant l'eina John the Ripper per avaluar la seguretat de les contrasenyes dels usuaris del sistema. Primer es va generar un fitxer amb els hashes de contrasenyes reals (contra.txt) combinant els fitxers /etc/passwd i /etc/shadow. Després es va executar John the Ripper tant amb la seva manera automàtica com amb un diccionari personalitzat.
+El resultat va ser la identificació de dues contrasenyes febles (toor per a l'usuari root i letne per a l'usuari entel), fet que demostra l'efectivitat de l'eina per detectar contrasenyes vulnerables. Aquestes proves confirmen que John the Ripper funciona correctament i permet avaluar el nivell de seguretat de les contrasenyes, facilitant la presa de decisions quant a polítiques de contrasenyes més robustes.
+
+—---------------------------------------------------------------------------------------------------------------
+***SERVICIO SSH***
+
+Abans d'instal·lar el servidor SSH, hem actualitzat tots els paquets de Debian:
+~$ apt upgrade
+1. Instal·lació del servidor i del client SSH
+A la màquina que farà de servidor, instal·lem el servidor SSH:
+~$ apt install -i openssh-server
+A la màquina client, instal·lem el client SSH:
+~$ apt install -i openssh-client
+2. Configuració de la xarxa
+Editem el fitxer /etc/network/interfaces a les dues màquines per assignar adreces IP estàtiques.
+
+Servidor (10.4.1.3)
+auto ep0s3
+iface enp0s3 inet static 
+broadcast 10.4.1.255
+network 10.4.1.0 
+netmask 255.255.255.0
+address 10.4.1.3
+gateway 10.4.1.1
+
+Client (10.4.1.2):
+auto ep0s3
+iface enp0s3 inet static 
+broadcast 10.4.1.255
+network 10.4.1.0 
+netmask 255.255.255.0
+address 10.4.1.2
+gateway 10.4.1.1
+
+Hem configurat el fitxer etc/ssh/sshd per tal que es pogués accedir amb la clau pública/privada generada des de la màquina del client.
+
+
+Hem anat a la configuració ssh de la màquina servidor amb la comanda:
+
+~$ nano /etc/ssh/sshd_config 
+Localitzem la directiva PermitRootLogin i la canviem a:
+PermitRootLogin yes
+
+Per permetre l'accés a root des d'una màquina client. Desem i tanquem, i després reiniciem el servei per aplicar canvis:
+
+~$ systemctl restart sshd
+
+3. Generació de claus SSH al client
+
+Per permetre la connexió sense contrasenya, generem un parell de claus pública/privada al client:
+
+~$ ssh-keygen
+
+Opcions a escollir:
+
+Ruta per defecte: /home/usuari/.ssh/id_rsa → prémer Enter.
+
+Si ja existia una clau, acceptem sobreescriure-la (opció yes).
+
+Opcionalment, introduïm una passphrase per protegir la clau privada; si no volem, premem Enter sense res.
+
+
+4. Distribució de la clau pública al servidor
+
+Ara tindrem la nostra clau pública i la nostra clau privada. El que hem de fer per tant és enviar la nostra clau pública al servidor per poder accedir per certificat digital.
+
+Enviem la clau pública al servidor per habilitar l'autenticació per certificat:
+~$ ssh-copy-id user@ip_server
+
+user= al nom de l'usuari al qual ens volem connectar
+ip_server = la ip que té el nostre servidor. 
+
+En el nostre cas el que hem fet serà la comanda següent:
+
+~$ ssh-copy-id entel@10.4.1.3 
+
+Confirmem l'empremta del servidor amb yes.
+
+Introduïm la contrasenya de l'usuari remot entel.
+
+L'ordre afegeix la clau pública a /home/entel/.ssh/authorized_keys al servidor. En aquest fitxer es guarden les claus dels clients que poden accedir al servidor sense contrasenya per ssh.
+
+5. Connexió SSH sense contrasenya
+
+Ara podem connectar directament, sense introduir contrasenya:
+
+~$ ssh entel@10.4.1.3
+
+Ara ja podrem accedir al servidor amb "user@ip_server" i entrarem directament a la sessió.
+
+6. Configuració final /etc/ssh/sshd_config
+
+Restricció d'accés per a root:
+
+PermitRootLogin prohibit-password
+
+
+Amb prohibit-password només es podrà iniciar sessió com a root usant claus públiques (o altres mètodes no interactius), bloquejant l'accés per contrasenya.
+L'alternativa without-password té el mateix efecte.
+
+Autenticació per clau pública:
+
+PubkeyAuthentication yes
+Habilita l'ús de claus SSH per autenticar els usuaris.
+
+Autenticació per contrasenya:
+
+PasswordAuthentication yes 
+
+Permet que els usuaris (diferents de root) es puguin autenticar amb contrasenya.
+
+Protocol i xifrats:
+
+Protocol 2
+Ciphers aes256-ctr,aes192-ctr,aes128-ctr
+Força l'ús de la versió 2 del protocol SSH i especifica xifrats forts.
+Manteniment de connexions actives:
+
+ClientAliveInterval 60
+ClientAliveCountMax 
+Envía un mensaje cada 60 s al cliente para comprobar si sigue activo.
+
+
+Tanca la connexió després de 3 respostes fallides.
+
+Al final, guardem els canvis i executem:
+
+~$ systemctl restart sshd
+
+Amb aquesta configuració es reforça la seguretat del servidor SSH:
+Accés root només amb clau pública.
+Xifratge i protocol actualitzats.
+Control de connexions inactives.
+
+***PROVES DE FUNCIONAMENT***
+llaves_servidor, llaves_client: Hem comprovat que la clau pública del client (id_rsa.pub) coincideix amb la clau registrada al fitxer authorized_keys del servidor. Això garanteix que l'autenticació per clau SSH està configurada correctament i permetrà l'accés sense contrasenya des del client al servidor
+
+prueba_ssh_cliente: En intentar connectar-se des del client al servidor utilitzant l'usuari entel, el sistema sol·licita contrasenya. Això indica que aquest usuari no té configurada l'autenticació per clau pública.
+
+prueba_ssh_root: La connexió des del client al servidor usant l'usuari root es realitza sense necessitat de contrasenya, cosa que confirma que la clau pública corresponent va ser correctament agregada al fitxer authorized_keys del servidor. 
+Observacions clau:
+ No hi ha retransmissions ni errors TCP.
+SSH xifrat correctament des del principi (després d'intercanvi de versions).
+Tota la sessió es concentra al voltant del segon 13, cosa que indica una connexió ràpida i probablement un test de connexió o execució ràpida d'ordres.
+
+prueba_mixta:
+
+systemctl status sshd
+Es comprova que el servei sshd (servidor SSH) està actiu i corrent correctament.
+El PID 1787 correspon al procés principal del servei.
+El sistema confirma que està escoltant a totes les interfícies (0.0.0.0 i ::) pel port 22, que és el port estàndard SSH.
+A més, hi ha una línia als logs:
+Accepted publickey for root from 10.4.1.2 port 55814 ssh2
+Indica que l'usuari root va aconseguir autenticar-se usant clau pública, confirmant que el mecanisme d'autenticació amb clau funciona correctament.
+
+ps aux | grep -i ssh
+Mostra diversos processos relacionats amb sshd:
+Procés principal descolta.
+Sessions actives: sshd: root@pts/0, cosa que mostra una connexió SSH activa de l'usuari root. També apareix el procés de l'ordre script, que està capturant aquesta prova.
+
+ss -tlp
+Verifica que el port 22 està en estat LISTEN, és a dir, obert i esperant connexions.
+Es mostra el PID que coincideix amb el procés sshd i assegura coherència entre els serveis actius i els sockets oberts.
+
+tcpdump -n -s 0 host 10.4.1.2 and 10.4.1.3 -w servidor_ssh.pcap
+Es capturen 70 paquets entre client (10.4.1.2) i servidor (10.4.1.3), cosa que reflecteix trànsit real de SSH.
+L'anàlisi posterior (tcpdump -r servidor_ssh.pcap) mostra trànsit xifrat de sessions SSH: intercanvi de SYN, ACK i PSH, així com missatges de finalització (FIN), la qual cosa indica un intercanvi complet de sessió.
+tshark -r servidor_ssh.pcap -j ssh
+
+S'analitza el fitxer de captura en profunditat:
+Apareixen paquets SSH xifrats, indicatius que la comunicació està protegida.
+
+Es detecten esdeveniments clau del protocol SSH com:
+Protocol (SSH-2.0...)
+Key Exchange Init
+Diffie-Hellman
+New Keys
+
+
+Tot això evidencia que s’estableix una connexió SSH completa i segura, passant per les fases correctes dintercanvi de claus i xifrat.
+
+prueba_logs
+
+El log d'autenticació mostra esdeveniments del sistema, incloent-hi:
+
+Inici de sessió de l'usuari root a la consola (tty1).
+Obertura de sessions per part de systemd-logind i processos cron.
+
+Tot i que no està relacionat directament amb SSH, confirma que el sistema i els seus serveis d'usuari funcionen correctament en paral·lel.
+
+
+emprenta_servidor: L'empremta digital pot ser comparada pels clients SSH per confirmar que estan connectant amb el servidor autèntic. Aquesta comparació s'ha de fer abans d'acceptar la clau per primera vegada.
+
+
+***ARXIUS DE CONFIGURACIÓ***
+interfaces_servidor: fitxer /etc/network/interfícies del servidor.
+
+interfaces_client: fitxer /etc/network/interfaces del client.
+
+ssh_servidor: fitxer /etc/ssh/sshd_config del servidor.
+
+PermitRootLogin prohibit-password: L'usuari root no pot iniciar sessió amb contrasenya, però sí mitjançant clau pública.
+PubkeyAuthentication yes: Es permet autenticació per clau pública (més segura).
+PasswordAuthentication yes: També es permet l'autenticació per contrasenya.
+Protocol 2: Es força l'ús de la versió segura del protocol SSH (SSH-2).
+Ciphers: S'especifiquen els algorismes de xifratge permesos per protegir la sessió.
+ClientAliveInterval i ClientAliveCountMax: Controlen el temps d'inactivitat abans de desconnectar clients (mecanisme keepalive).
+Aquesta configuració permet connexions tant per contrasenya com per clau pública, prioritzant la seguretat, i és compatible amb els escenaris de proves que estem executant.
+----------------------------------------------------------------------------------------------------------------
+
+***SERVICI SFTP***
+
+AL SERVIDOR
+
+1. Instal·lació del servidor i del client SSH
+Per instal·lar el servidor sftp hem d'utilitzar la comanda:
+
+~$ apt install openssh-server
+
+OpenSSH inclou tant el daemon SSH (sshd) com el subsistema SFTP. En instal·lar-lo obtens ja el servidor SSH (i per tant SFTP) sense necessitat de programari addicional.
+
+1.2. Configurar el subsistema SFTP
+
+El pas següent és editar el fitxer etc/ssh/sshd_config.
+
+Buscarem la línia "Subsystem sftp /usr/libexec/openssh/sftp-server" i la substituirem per "Subsystem sftp internal-sftp"
+
+Això ho farem perquè internal-sftp és un SFTP integrat a sshd, més lleuger i segur (no llança un binari extern). Redueix la superfície d'atac i evita problemes de permisos amb executables addicionals.
+
+
+Posteriorment, afegirem les següents línies al fitxer /etc/ssh/sshd_config:
+        Match Group sftp_user # Només afecta els usuaris del grup sftp_user.
+        ChrootDirectory /sftp/%u # Tanca (“chroot”) l'usuari a /sftp/usuari, impedint-li sortir a tot el sistema de fitxers.
+        ForceCommand internal-sftp # Obliga el dimoni a executar sempre SFTP (res de shells o ordres remots), assegurant que aquest usuari només tingui accés a transferència d'arxius
+1.3. Crear el grup i assignar usuaris
+En client i servidor (però n'hi ha prou al servidor):
+~$ groupadd sftp_user 
+~$ usermod -g sftp_users -d /entel entel	
+Creem un grup dedicat (sftp_user) perquè només els membres d'aquest grup entrin al chroot i usin SFTP.
+Amb usermod -d /entel fixem el directori home virtual dins del chroot.
+1.4. Preparar directoris i permisos
+
+Només al servidor:
+~$ mkdir /sftp && mkdir /sftp/entel 
+~$ mkdir /sftp/shared && chown root:sftp_users /sftp/shared
+~$ chown root:root /sftp/entel
+~$ mkdir /sftp/entel/files
+~$ chown entel:entel /sftp/entel/files
+
+/sftp
+ Root del chroot, sempre ha de pertànyer a root (per seguretat).
+
+/sftp/entel
+ Directori chroot de l'usuari, propietat de root per evitar fuites en modificar permisos.
+
+/sftp/entel/files
+ Subdirectori on l'usuari pot llegir/escriure realment (propietat entel).
+
+/sftp/shared
+ Carpeta comuna per a tots els membres de sftp_user (propietat root:sftp_user).
+
+1.5. Reiniciar el servei SSH
+
+~$ systemctl restart sshd
+
+Perquè sshd recarregui la nova configuració i el subsistema SFTP intern entri en efecte.
+
+2. Configuració del client SFTP
+2.1. Generar parell de claus SSH
+
+~$ ssh-keygen
+
+Permet autenticació sense contrasenya (més segura i automatitzable).
+Protegeix la teva clau privada amb passphrase si vols una capa extra.
+
+2.2. Copiar la clau pública al servidor via SFTP
+~$ cd ~/.ssh
+~$ sftp entel@10.4.1.3
+sftp> cd /files
+sftp> put id_rsa.pub
+sftp> exit
+
+Fem servir SFTP per pujar la clau a un directori que ja existeix i té permisos correctes.
+Evitem fer servir SSH+scp abans de configurar l'autenticació per clau.
+
+2.3. Instal·lar la clau pública al directori autoritzat
+~$ cd /sftp/entel/files
+ ~$ mkdir .ssh
+ ~$ cat id_rsa.pub >> .ssh/authorized_keys
+ ~$ rm id_rsa.pub
+
+authorized_keys és on el daemon sshd cerca les claus vàlides.
+Després, l'usuari entel es podrà connectar sense contrasenya.
+
+2.4. Configuració final al servidor SSH
+Editem de nou /etc/ssh/sshd_config:
+PubkeyAuthentication yes #Activa l'autenticació per clau pública.
+AuthorizedKeysFile /sftp/%u/files/.ssh/authorized_keys #Indica la ubicació del fitxer de claus dins del chroot.
+
+Reinciem
+ ~$ systemctl restart sshd #Recarregar configuració perquè accepti la nova ubicació d'authorized_keys.
+3. Muntatge del directori SFTP al client
+3.1. Muntatge temporal amb sshfs
+Crear punt de muntatge:
+ ~$ mkdir test_sftp
+
+Muntar l'home remot d'entel:
+ ~$ sshfs entel@10.4.1.3:/ ./test_sftp
+
+Comprovar contingut:
+ ~$ cd test_sftp
+ ~$ ls
+
+Desmuntar en acabar el seu ús:
+
+ ~$ umount test_sftp
+
+sshfs us permet tractar l'SFTP com un sistema de fitxers local, ideal per a edició o backup sense scripts addicionals.
+
+El muntatge és efímer i es desmunta amb umount.
+
+3.2. Muntatge permanent a /etc/fstab
+Crear directori de muntatge:
+ ~$ mkdir /mnt/entel
+Edita /etc/fstab:
+ ~$ nano /etc/fstab
+
+Afegeix la línia:
+sshfs#entel@10.4.1.3:/files /mnt/entel fuse defaults,_netdev,idmap=user,umask=0077 0 0
+
+Aplicar muntatges:
+# mount -a
+
+Munta automàticament l'SFTP a l'arrencada, després de la xarxa (_netdev).
+uid, gid, umask garanteixen permisos correctes al client
+
+Amb aquests passos, tindrem un servidor SFTP segur amb chroot per al grup sftp_user, autenticació per clau pública i la capacitat de muntar el directori remot des del client, tant temporalment amb sshfs com automàticament en iniciar el sistema.
+
+Configuracio del firewall al servidor:
+
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet firewall {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        ct state established,related accept
+
+        iifname "ho" accept
+
+        icmp type echo-request accept
+
+        ip saddr 10.4.1.0/24 tcp dport 22 accept
+
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
+
+(Hem explicat la seva implementació posteriorment)
+
+***PROVES DE VERIFICACIÓ***
+
+prueba_compartir_fichero:
+
+S'accedeix via SFTP des del client al servidor usant l'usuari entel, es descarrega el fitxer prova1.txt, i se'n verifica el contingut.
+
+Resultat:
+
+El client es pot connectar amb SFTP al servidor (encara que sol·licita contrasenya).
+El fitxer prova1.txt és transferit correctament.
+El contingut es verifica amb èxit des del client.
+
+
+Interpretació:
+
+La transferència de fitxers funciona correctament usant SFTP, s'usa autenticació per clau pública.
+
+
+prueba_sftp_client:
+
+Connexió al servidor per SFTP usant l'opció -v (mode verbós) per observar el procés d'autenticació.
+
+Resultat:
+
+La connexió utilitza la clau pública RSA, i s'autentica correctament sense demanar contrasenya.
+El fitxer authorized_keys al servidor accepta la clau del client (/root/.ssh/id_rsa).
+
+Interpretació:
+Demostra que l'autenticació SSH per clau pública sí que està correctament configurada per a l'usuari entel. Això contradiu la prova inicial on demanava contrasenya, indicant que probablement en aquesta primera prova el client encara no tenia la clau configurada correctament o es va fer servir un altre usuari o equip.
+
+
+prueba_funcionamiento_systemctl:
+
+Descripció: Verifica l'estat del servei SSH al servidor.
+Resultat:
+El servei SSH està actiu i corrent correctament.
+Hi ha múltiples registres de connexions exitoses usant clau pública per a lusuari entel.
+Interpretació:
+ El servidor SSH està ben configurat i operant, acceptant connexions segures amb autenticació per clau.
+prueba_carpeta_compartida:
+
+Es verifica el contingut d'una carpeta compartida tant des del client (/mnt/entel) com des del servidor (/sftp/entel/files).
+Resultat:
+El contingut és el mateix a les dues ubicacions.
+Hi ha diversos fitxers disponibles, com ara id_rsa.pub, prueba1.txt, sftp_cliente.txt.
+
+
+Interpretació:
+La carpeta compartida està muntada correctament al client i reflecteix el contingut del servidor. Això indica una configuració correcta d'un sistema de fitxers compartit (probablement usant sshfs).
+
+prueba_mixta:
+
+Com a part de la verificació completa del funcionament del servidor SSH, es van fer diverses comprovacions a nivell de servei, sessions actives, ports, trànsit de xarxa i anàlisi del protocol SSH.
+
+En primer lloc, es va executar la comanda systemctl status ssh per verificar que el servei del servidor SSH estigués actiu. El resultat va mostrar que el servei sshd (OpenBSD Secure Shell server) estava en estat actiu (running), sense errors d'arrencada, amb el procés principal identificat pel PID 543. Això confirma que el demon SSH està operatiu i escoltant connexions.
+
+Posteriorment, es van analitzar els registres del sistema, on es va poder comprovar que l'usuari entel havia accedit al servidor diverses vegades mitjançant autenticació per clau pública RSA, la qual cosa s'evidencia en línies del tipus:
+
+Accepted publickey for entel from 10.4.1.2 port XXXX ssh2: RSA SHA256:rWtE/...
+
+Això demostra que l'autenticació sense contrasenya mitjançant clau pública està configurada correctament i 
+funcionant.
+A continuació, es va utilitzar la comanda ps aux | grep -i ssh per inspeccionar els processos relacionats amb SSH. A la sortida, es va observar que, a més del procés principal del servidor (sshd), hi havia processos actius corresponents a sessions de l'usuari entel, incloent-hi una sessió del tipus internal-sftp. Això indica que lusuari està utilitzant el protocol SFTP per interactuar amb el servidor, la qual cosa confirma que no només hi ha connexió SSH, sinó també ús actiu del sistema de transferència de fitxers segur.
+
+Per verificar que el servidor realment escoltés connexions, es va executar l'ordre ss -tlp, el qual va mostrar que el port 22, associat al servei SSH, es troba en estat LISTEN, tant a IPv4 com a IPv6. Això garanteix que el servidor està disponible per acceptar connexions SSH des de qualsevol interfície de xarxa.
+Com a següent pas, es va capturar trànsit de xarxa entre el client (10.4.1.2) i el servidor (10.4.1.3) mitjançant l'ordre tcpdump:
+
+tcpdump -n -s 0 host 10.4.1.2 and 10.4.1.3 -w servidor_ssh.pcap
+
+Aquesta captura es va desar en un fitxer anomenat servidor_ssh.pcap. Després, utilitzant tcpdump -r, es va analitzar el contingut del fitxer capturat. Es va poder observar una conversa TCP a través del port 22, que va incloure l'establiment, la transferència de dades i el tancament de sessions. Això confirma que es van fer comunicacions reals sobre el protocol SSH durant el període d'observació.
+
+Finalment, es va fer servir l'eina tshark per a una anàlisi més profunda del trànsit SSH, específicament sobre el protocol d'aplicació. Usant l'ordre:
+
+tshark -r servidor_ssh.pcap -j ssh
+
+Es van visualitzar detalladament les diferents fases de la sessió SSH, incloent:
+Client: Protocol – intercanvi de versions del protocol SSH.
+Key Exchange Init - fase inicial dintercanvi de claus.
+Diffie-Hellman – negociació segura de claus mitjançant aquest algorisme.
+New Keys – establiment de claus de sessió xifrades.
+Encrypted packet – paquets ja xifrats, cosa que indica que la sessió està completament establerta i protegida.
+Aquesta anàlisi confirma que la sessió SSH es va establir amb èxit i que el trànsit entre client i servidor està correctament xifrat i funcionant segons el protocol.
+
+
+carpeta_compartida_temporal:
+
+
+Similar a l'anterior, es munta l'arrel del servidor (/) sobre el directori ./test_sftp del client.
+Resultat:
+Es navega sense errors per les carpetes.
+El contingut de fils es mostra correctament.
+Interpretació:
+Verifica que el muntatge remot usant SSH funciona correctament, permetent navegar pel sistema de fitxers remot sense problema.
+
+***ARXIUS DE CONFIGURACIÓ***
+
+etc_fstab:
+Aquest fitxer conté informació sobre els sistemes de fitxers que cal muntar automàticament en iniciar el sistema. Cada línia defineix un punt de muntatge amb l'origen, el tipus, les opcions i la prioritat.
+Contingut rellevant: sshfs#entel@10.4.1.3:/files /mnt/entel fuse _netdev,idmap=user,umask=0077 0 0
+sshfs#entel@10.4.1.3:/files: Indica que es muntarà remotament el directori /files del servidor 10.4.1.3 mitjançant SSHFS (SSH File System) usant l'usuari entel.
+/mnt/entel: És el punt de muntatge al client local on es podrà accedir al contingut remot.
+fuse: Tipus de sistema de fitxers (FUSE permet als usuaris muntar sistemes de fitxers en espai d'usuari).
+_netdev: Assenyala que el sistema de fitxers depèn de la xarxa (necessari per a SSHFS).
+idmap=user: Mapeja l'UID de l'usuari remot a l'usuari local.
+umask=0077: Defineix permisos restrictius (només el propietari pot llegir/escriure).
+
+nftables.conf:
+Explicació de les regles afegides al tallafoc:
+ct state established,related accept: S'accepten connexions ja establertes o relacionades.
+iifname "ho" accept: Es permet trànsit per la interfície local (loopback).
+icmp type echo-request accept: Permet pings (útil per comprovar connectivitat).
+ip saddr 10.4.1.0/2 tcp dport 22 accept: Permet connexions SSH al port 22 només des d'adreces IP dins del rang 10.4.1.0/2.
+El tallafoc està configurat per permetre únicament SSH des d'una xarxa específica i bloquejar tota la resta per defecte. Això reforça la seguretat del servidor.
+
+ssh_sshd_config:
+Aquest fitxer defineix una política segura, que permet tant login per clau com per contrasenya, restringeix usuaris, i aïlla els de SFTP. La configuració de claus públiques personalitzades encaixa perfectament amb allò verificat a les proves.
+
+Port 22: El servidor escolta al port estàndard de SSH.
+
+SysLogFacilityAUTH: emmagatzema un historial de logs per via SSH
+
+PermitRootLogin prohibit-password: No es permet login root per contrasenya (només per clau pública o deshabilitat).
+
+PubkeyAuthentication yes: Habilita autenticació amb clau pública.
+
+PasswordAuthentication yes: També permet autenticació amb contrasenya (es pot mantenir per a compatibilitat).
+ClientAliveInterval i ClientAliveCountMax: Paràmetres per desconnectar sessions inactives, cosa que millora la seguretat.
+
+AuthorizedKeysFile: Defineix la ubicació del fitxer de claus autoritzades per a cada usuari. Aquí es fa servir una ruta personalitzada: /sftp/%u/files/.ssh/authorized_keys, la qual cosa implica un entorn tipus chroot.
+
+Subsystem sftp internal-sftp: Usa la versió interna de SFTP (més segura i controlada).
+
+Match Group sftp_user + ChrootDirectory + ForceCommand: Per a usuaris del grup sftp_user, s'aplica:
+Aïllament en un entorn restringit (chroot)
+Ús exclusiu de SFTP (no shell SSH)
+
+
+
+ENTREGA FINAL TUNNELING SSH 
+
+
+INTRODUCCIÓ:
+—-------------------
+
+Els túnels SSH permeten encapsular trànsit d'altres protocols dins d’una connexió SSH segura. Aquesta tècnica és útil per protegir serveis no segurs o per accedir a recursos situats darrere de tallafocs o xarxes internes
+
+Hi ha dos tipus de tunels:
+
+1) Local Port Forwarding: El client obre un port local que redirigeix, a través del túnel SSH, cap a un port remot del servidor.
+
+2) Remote Port Forwarding: El servidor obre un port remot que redirigeix, a través del túnel, cap a un servei local del client
+
+CONFIGURACIÓ:
+—---------------------
+
+Aquesta és la configuració d'IPs de les màquines virtuals utilitzades per al ssh tunneling:
+
+client-ssh: 10.4.1.2
+local-ssh: 10.4.1.5
+intermediari-ssh: 10.4.1.4
+servidor-ssh: 10.4.1.3
+
+Totes pertanyents a la Xarxa Interna intnet-ssh com s'indica a cadascun dels etc/network/interface:
+
+
+etc/network/interface de client-ssh:
+
+auto enp0s3
+iface enp0s3 inet static
+	broadcast 10.4.1.255
+	network 10.4.1.0
+	netmask 255.255.255.0
+	address 10.4.1.2
+	gateway 10.4.1.1
+
+etc/network/interface de local-ssh:
+
+auto enp0s3
+iface enp0s3 inet static
+	broadcast 10.4.1.255
+	network 10.4.1.0
+	netmask 255.255.255.0
+	address 10.4.1.5
+	gateway 10.4.1.1
+
+etc/network/interface de intermediari-ssh:
+
+auto enp0s3
+iface enp0s3 inet static
+	broadcast 10.4.1.255
+	network 10.4.1.0
+	netmask 255.255.255.0
+	address 10.4.1.4
+	gateway 10.4.1.1
+
+etc/network/interface de servidor-ssh:
+
+auto enp0s3
+iface enp0s3 inet static
+	broadcast 10.4.1.255
+	network 10.4.1.0
+	netmask 255.255.255.0
+	address 10.4.1.3
+	gateway 10.4.1.1
+
+
+Després de configurar les IPs de les màquines, a la Màquina Virtual servidor-ssh, crearem un fitxer index.html amb el contingut següent:
+
+fet "<h1>Hola des de Servidor</h1>"
+
+Aquest fitxer ens servirà per corroborar que el client accedeix a servidor-ssh a través de les màquines virtuals de local-ssh i intermediari-ssh:
+
+Configurem cada màquina (local-ssh, intermediari-ssh i servidor-ssh, cadascuna amb una instal·lació del paquet open-ssh server ja aplicada) amb els següents camps al fitxer sshd_config:
+
+AllowTcpForwarding yes
+GatewayPorts yes
+PermitTunnel yes
+
+PROVES DE FUNCIONAMENT
+—---------------------------------------
+
+Un cop acabada la configuració podem fer les proves pertinents per comprovar que funcioni el SSH Tunneling Local i el SSH Tunneling Remot:
+
+Per al Local, provem amb el següent:
+
+Des de client-ssh fem un wget de la IP de la MV de local-ssh (10.4.1.5) pel port 8080:
+
+$ wget 10.4.1.5:8080
+
+I a la MV de local-ssh executem una connexió SSH a servidor-ssh (redirigint el port local 8080 cap al servidor amb ip 10.4.1.3, passant per intermediari-ssh amb ip 10.4.1.4).
+
+$ ssh -N -L 10.4.1.5:8080:10.4.1.3:80 root@10.4.1.4
+
+Finalment, a servidor-ssh simulem un servidor http que mostra el text de “Hola des de Servidor” que prèviament guardem al fitxer index.html pel port 80:
+
+$ while true; do cat index.html | nc -v -l -q 1 -w 5 -p 80 >> log_nc_nav 2>>log_nc_ip; done
+
+Comprovarem que la connexió tunneling ssh és correcta ja que a client-ssh ens apareix que es va guardar el fitxer index.html que es mostrava des de servidor-ssh:
+
+
+Al fitxer adjunt “full_log_cliente.txt”:
+2025-05-11 01:22:10 (0,10 B/s) - «index.html.3» desat [40]
+
+Segons els tcpdumps que hem aplicat:
+
+Per Cliente: 
+
+$ tcpdump host 10.4.1.5 or 10.4.1.4 or 10.4.1.3 -w t_client.pcap
+
+Per Local:
+
+$ tcpdump host 10.4.1.2 or 10.4.1.4 or 10.4.1.3 -w t_local.pcap
+
+Per Intermediari:
+
+$ tcpdump host 10.4.1.2 or 10.4.1.5 or 10.4.1.3 -w t_intermediari.pcap
+
+Per Servidor:
+
+$ tcpdump host 10.4.1.2 or 10.4.1.5 or 10.4.1.4 -w t_servidor.pcap
+
+Podem veure que:
+
+reading from file t_client.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+23:39:41.513137 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [S], seq 2153793851, win 64240, options [mss 1460,sackOK,TS val 1406782453 ecr 0,nop,wscale 7], length 0
+23:39:41.513704 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [S.], seq 66113077, ack 2153793852, win 65160, options [mss 1460,sackOK,TS val 1791873704 ecr 1406782453,nop,wscale 7], length 0
+23:39:41.513729 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [.], ack 1, win 502, options [nop,nop,TS val 1406782454 ecr 1791873704], length 0
+23:39:41.513845 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 1406782454 ecr 1791873704], length 128: HTTP: GET / HTTP/1.1
+23:39:41.514205 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [.], ack 129, win 509, options [nop,nop,TS val 1791873704 ecr 1406782454], length 0
+23:39:41.514206 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 3667992915:3667993007, ack 339566844, win 501, options [nop,nop,TS val 4248993525 ecr 737846121], length 92
+23:39:41.514382 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [S], seq 1847901565, win 64240, options [mss 1460,sackOK,TS val 4085760348 ecr 0,nop,wscale 7], length 0
+23:39:41.514588 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [S.], seq 1893377921, ack 1847901566, win 65160, options [mss 1460,sackOK,TS val 3244034758 ecr 4085760348,nop,wscale 7], length 0
+23:39:41.514588 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 4085760348 ecr 3244034758], length 0
+23:39:41.514746 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 1:45, ack 92, win 501, options [nop,nop,TS val 738286353 ecr 4248993525], length 44
+23:39:41.514882 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 45, win 501, options [nop,nop,TS val 4248993526 ecr 738286353], length 0
+23:39:41.514882 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 92:256, ack 45, win 501, options [nop,nop,TS val 4248993526 ecr 738286353], length 164
+23:39:41.514882 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:41.514946 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 4085760349 ecr 3244034758], length 128: HTTP: GET / HTTP/1.1
+23:39:41.515010 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [.], ack 129, win 509, options [nop,nop,TS val 3244034759 ecr 4085760349], length 0
+23:39:41.559164 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [.], ack 256, win 501, options [nop,nop,TS val 738286398 ecr 4248993526], length 0
+23:39:42.538045 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:43.562252 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:44.586216 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:45.610036 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:46.633986 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+23:39:46.691050 ARP, Request who-has 10.4.1.5 tell 10.4.1.4, length 46
+23:39:46.691050 ARP, Request who-has 10.4.1.3 tell 10.4.1.4, length 46
+23:39:46.691174 ARP, Reply 10.4.1.3 is-at 08:00:27:f3:af:49 (oui Unknown), length 46
+23:39:46.691282 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+23:39:46.733578 ARP, Request who-has 10.4.1.5 tell 10.4.1.2, length 28
+23:39:46.734134 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+23:39:46.738771 ARP, Request who-has 10.4.1.4 tell 10.4.1.5, length 46
+23:39:46.738772 ARP, Request who-has 10.4.1.2 tell 10.4.1.5, length 46
+23:39:46.738778 ARP, Reply 10.4.1.2 is-at 08:00:27:30:fe:25 (oui Unknown), length 28
+23:39:46.739012 ARP, Reply 10.4.1.4 is-at 08:00:27:29:82:18 (oui Unknown), length 46
+23:39:46.762147 ARP, Request who-has 10.4.1.4 tell 10.4.1.3, length 46
+23:39:46.762324 ARP, Reply 10.4.1.4 is-at 08:00:27:29:82:18 (oui Unknown), length 46
+23:39:47.658349 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 3244040902 ecr 4085760349], length 40: HTTP
+23:39:47.658350 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 3244040902 ecr 4085760349], length 0
+23:39:47.658561 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 41, win 502, options [nop,nop,TS val 4085766492 ecr 3244040902], length 0
+23:39:47.658709 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 45:121, ack 256, win 501, options [nop,nop,TS val 738292497 ecr 4248993526], length 76
+23:39:47.658911 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 1791879849 ecr 1406782454], length 40: HTTP
+23:39:47.658934 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [.], ack 41, win 502, options [nop,nop,TS val 1406788599 ecr 1791879849], length 0
+23:39:47.699107 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 42, win 502, options [nop,nop,TS val 4085766533 ecr 3244040902], length 0
+23:39:47.702821 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 121, win 501, options [nop,nop,TS val 4248999714 ecr 738292497], length 0
+23:39:47.702983 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 121:157, ack 256, win 501, options [nop,nop,TS val 738292542 ecr 4248999714], length 36
+23:39:47.703086 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 157, win 501, options [nop,nop,TS val 4248999714 ecr 738292542], length 0
+23:39:47.703226 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 1791879893 ecr 1406788599], length 0
+23:39:47.703576 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 1406788644 ecr 1791879893], length 0
+23:39:47.703801 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [.], ack 130, win 509, options [nop,nop,TS val 1791879894 ecr 1406788644], length 0
+23:39:47.703874 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 256:328, ack 157, win 501, options [nop,nop,TS val 4248999715 ecr 738292542], length 72
+23:39:47.704036 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [.], ack 328, win 501, options [nop,nop,TS val 738292543 ecr 4248999715], length 0
+23:39:47.704066 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 4085766538 ecr 3244040902], length 0
+23:39:47.704181 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 157:193, ack 328, win 501, options [nop,nop,TS val 738292543 ecr 4248999715], length 36
+23:39:47.704210 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [.], ack 130, win 509, options [nop,nop,TS val 3244040948 ecr 4085766538], length 0
+23:39:47.746988 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 193, win 501, options [nop,nop,TS val 4248999758 ecr 738292543], length 0
+
+El client (10.4.1.2) inicia una connexió HTTP a 10.4.1.5:8080 (http-alt).
+
+10.4.1.5 rep la petició i, alhora, inicia un túnel SSH cap a 10.4.1.4 (port 22).
+
+Des de 10.4.1.4, es redirigeix ​​una nova connexió HTTP a 10.4.1.3:80 (HTTP).
+
+La resposta viatja en sentit invers fins arribar de nou al client 10.4.1.2.
+
+Això indica que s'ha fet servir un túnel SSH invers o forward des de 10.4.1.5 a 10.4.1.4, i després una redirecció a 10.4.1.3. El trànsit encapsulat al túnel SSH correspon a la comunicació HTTP original.
+
+També podem veure que els ports implicats són els següents:
+
+50768 → HTTP des de 10.4.1.2 a 10.4.1.5:8080
+
+44150 → SSH des de 10.4.1.5 a 10.4.1.4:22
+
+46696 → HTTP des de 10.4.1.4 a 10.4.1.3:80
+
+I hi ha HTTP GET visible dues vegades:
+
+Una cap a 10.4.1.5 (http-alt)
+
+Una altra des de 10.4.1.4 cap a 10.4.1.3
+
+Això indica que la petició va ser reenviada correctament a través del túnel SSH. També podem veure paquets ARP per resoldre adreces, cosa que és normal quan les màquines estan iniciant comunicació entre si.
+En resum, el port 8080 està escoltant al servidor. El tràfic passa xifrat pel port SSH. I es creen correctament les connexions de client a servidor mitjançant la maquina local a través de l'intermediari.
+
+Addicionalment, hem utilitzat netcat per comprovar que s’ha realitzat correctament la connexió entre Client i Servidor mitjançant els tunels ssh:
+
+Al fitxer log_nc_nav:
+
+GET / HTTP/1.1
+Host: 10.4.1.5:8080
+User-Agent: Wget/1.21.3
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+
+Això mostra que sí que hi va haver intents de connexió correctes, fets amb wget, però dirigits al port 8080, no al 80 on nc estava escoltant.
+
+i al fitxer log_nc_ip:
+
+listening on [any] 80 ...
+no connection : Connection timed out
+…
+listening on [any] 80 ...
+connect to [10.4.1.3] from (UNKNOWN) [10.4.1.4] 40838
+…
+listening on [any] 80 ...
+no connection : Connection timed out
+
+On podem veure que el client es connecta correctament i rep el contingut d’index.html
+
+També tenim un log complet (fet amb la comanda script) de tot el procés al fitxer “full_log_client.txt” per corroborar l'èxit de les proves.
+
+Per a fer el Túnel SSH Remot, cal canviar a local-ssh la ip sobre el que fer el wget:
+
+$ ssh -N -R 10.1.1.181:8080:10.1.1.169:80 root@10.1.1.167
+
+Cambiant la "-L" anterior que indicava que seria Local, per -R que indica que es farà de forma Remota.
+
+I a client-ssh, aquesta vegada es farà el wget sobre la màquina intermediari-ssh amb ip 10.4.1.4 en comptes de la màquina servidor-ssh amb ip 10.4.1.5
+
+$ wget 10.4.1.4:8080
+
+Per a server es pot fer servir la mateixa comanda anterior:
+
+$ while true; do cat index.html | nc -v -l -q 1 -w 5 -p 80 >> log_nc_nav 2>>log_nc_ip; done
+
+Als fitxers "log_nc_nav" i "log_nc_ip" podem veure la connexió exitosa per al Túnel SSH Remot:
+
+log_nc_nav:
+
+GET / HTTP/1.1
+Host: 10.4.1.5:8080
+User-Agent: Wget/1.21.3
+Accept: */*
+Accept-Encoding: identity
+Connection: Keep-Alive
+
+log_nc_ip:
+
+listening on [any] 80 ...
+10.4.1.4: inverse host lookup failed: Host name lookup failure
+connect to [10.4.1.3] from (UNKNOWN) [10.4.1.4] 40838
+listening on [any] 80 ...
+no connection : Connection timed out
+listening on [any] 80 ...
+
+Al tcpdump podem veure també, la connexió exitosa amb el Túnel remot
+
+reading from file t_intermediari-remot.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+14:01:03.263596 IP 10.4.1.2.49740 > 10.4.1.4.http-alt: Flags [S], seq 3731567369, win 64240, options [mss 1460,sackOK,TS val 3244420050 ecr 0,nop,wscale 7], length 0
+14:01:03.263633 IP 10.4.1.4.http-alt > 10.4.1.2.49740: Flags [S.], seq 4103604597, ack 3731567370, win 65160, options [mss 1460,sackOK,TS val 3169981703 ecr 3244420050,nop,wscale 7], length 0
+14:01:03.264211 IP 10.4.1.2.49740 > 10.4.1.4.http-alt: Flags [.], ack 1, win 502, options [nop,nop,TS val 3244420051 ecr 3169981703], length 0
+14:01:03.264414 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 3445521842:3445521934, ack 1716737468, win 501, options [nop,nop,TS val 2871052999 ecr 2909602216], length 92
+14:01:03.264742 IP 10.4.1.2.49740 > 10.4.1.4.http-alt: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 3244420051 ecr 3169981703], length 128: HTTP: GET / HTTP/1.1
+14:01:03.264753 IP 10.4.1.4.http-alt > 10.4.1.2.49740: Flags [.], ack 129, win 509, options [nop,nop,TS val 3169981704 ecr 3244420051], length 0
+14:01:03.265006 IP 10.4.1.5.59568 > 10.4.1.3.http: Flags [S], seq 2466127612, win 64240, options [mss 1460,sackOK,TS val 1095025357 ecr 0,nop,wscale 7], length 0
+14:01:03.265469 IP 10.4.1.3.http > 10.4.1.5.59568: Flags [S.], seq 1565259921, ack 2466127613, win 65160, options [mss 1460,sackOK,TS val 3635420537 ecr 1095025357,nop,wscale 7], length 0
+14:01:03.265739 IP 10.4.1.5.59568 > 10.4.1.3.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 1095025358 ecr 3635420537], length 0
+14:01:03.265740 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [P.], seq 1:45, ack 92, win 501, options [nop,nop,TS val 2910072455 ecr 2871052999], length 44
+14:01:03.265757 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [.], ack 45, win 501, options [nop,nop,TS val 2871053001 ecr 2910072455], length 0
+14:01:03.265884 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 92:256, ack 45, win 501, options [nop,nop,TS val 2871053001 ecr 2910072455], length 164
+14:01:03.266470 IP 10.4.1.5.59568 > 10.4.1.3.http: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 1095025358 ecr 3635420537], length 128: HTTP: GET / HTTP/1.1
+14:01:03.266829 IP 10.4.1.3.http > 10.4.1.5.59568: Flags [.], ack 129, win 509, options [nop,nop,TS val 3635420538 ecr 1095025358], length 0
+14:01:03.307173 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [.], ack 256, win 501, options [nop,nop,TS val 2910072496 ecr 2871053001], length 0
+14:01:08.271453 ARP, Request who-has 10.4.1.3 tell 10.4.1.5, length 46
+14:01:08.272130 ARP, Reply 10.4.1.3 is-at 08:00:27:f3:af:49 (oui Unknown), length 46
+14:01:08.303731 ARP, Request who-has 10.4.1.5 tell 10.4.1.4, length 28
+14:01:08.303797 ARP, Request who-has 10.4.1.2 tell 10.4.1.4, length 28
+14:01:08.304628 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+14:01:08.304629 ARP, Reply 10.4.1.2 is-at 08:00:27:30:fe:25 (oui Unknown), length 46
+14:01:08.454856 ARP, Request who-has 10.4.1.4 tell 10.4.1.2, length 46
+14:01:08.454890 ARP, Reply 10.4.1.4 is-at 08:00:27:29:82:18 (oui Unknown), length 28
+14:01:08.509469 ARP, Request who-has 10.4.1.5 tell 10.4.1.3, length 46
+14:01:08.509579 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+14:04:01.069658 IP 10.4.1.2.49740 > 10.4.1.4.http-alt: Flags [F.], seq 129, ack 1, win 502, options [nop,nop,TS val 3244597856 ecr 3169981704], length 0
+14:04:01.069902 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 256:292, ack 45, win 501, options [nop,nop,TS val 2871230805 ecr 2910072496], length 36
+14:04:01.070953 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [.], ack 292, win 501, options [nop,nop,TS val 2910250260 ecr 2871230805], length 0
+14:04:01.070954 IP 10.4.1.5.59568 > 10.4.1.3.http: Flags [F.], seq 129, ack 1, win 502, options [nop,nop,TS val 1095203163 ecr 3635420538], length 0
+14:04:01.111676 IP 10.4.1.4.http-alt > 10.4.1.2.49740: Flags [.], ack 130, win 509, options [nop,nop,TS val 3170159551 ecr 3244597856], length 0
+14:04:01.113259 IP 10.4.1.3.http > 10.4.1.5.59568: Flags [.], ack 130, win 509, options [nop,nop,TS val 3635598385 ecr 1095203163], length 0
+14:04:02.186300 IP 10.4.1.2.44408 > 10.4.1.4.http-alt: Flags [S], seq 3104066012, win 64240, options [mss 1460,sackOK,TS val 3244598972 ecr 0,nop,wscale 7], length 0
+14:04:02.186354 IP 10.4.1.4.http-alt > 10.4.1.2.44408: Flags [S.], seq 3083672117, ack 3104066013, win 65160, options [mss 1460,sackOK,TS val 3170160625 ecr 3244598972,nop,wscale 7], length 0
+14:04:02.187683 IP 10.4.1.2.44408 > 10.4.1.4.http-alt: Flags [.], ack 1, win 502, options [nop,nop,TS val 3244598974 ecr 3170160625], length 0
+14:04:02.188067 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 292:384, ack 45, win 501, options [nop,nop,TS val 2871231923 ecr 2910250260], length 92
+14:04:02.188884 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [.], ack 384, win 501, options [nop,nop,TS val 2910251378 ecr 2871231923], length 0
+14:04:02.189159 IP 10.4.1.5.56818 > 10.4.1.3.http: Flags [S], seq 924512743, win 64240, options [mss 1460,sackOK,TS val 1095204281 ecr 0,nop,wscale 7], length 0
+14:04:02.189484 IP 10.4.1.2.44408 > 10.4.1.4.http-alt: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 3244598976 ecr 3170160625], length 128: HTTP: GET / HTTP/1.1
+14:04:02.189485 IP 10.4.1.3.http > 10.4.1.5.56818: Flags [S.], seq 2157690347, ack 924512744, win 65160, options [mss 1460,sackOK,TS val 3635599461 ecr 1095204281,nop,wscale 7], length 0
+14:04:02.189522 IP 10.4.1.4.http-alt > 10.4.1.2.44408: Flags [.], ack 129, win 509, options [nop,nop,TS val 3170160629 ecr 3244598976], length 0
+14:04:02.189959 IP 10.4.1.5.56818 > 10.4.1.3.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 1095204282 ecr 3635599461], length 0
+14:04:02.190372 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [P.], seq 45:89, ack 384, win 501, options [nop,nop,TS val 2910251379 ecr 2871231923], length 44
+14:04:02.190683 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 384:548, ack 89, win 501, options [nop,nop,TS val 2871231926 ecr 2910251379], length 164
+14:04:02.190869 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:02.191862 IP 10.4.1.5.56818 > 10.4.1.3.http: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 1095204284 ecr 3635599461], length 128: HTTP: GET / HTTP/1.1
+14:04:02.192399 IP 10.4.1.3.http > 10.4.1.5.56818: Flags [.], ack 129, win 509, options [nop,nop,TS val 3635599464 ecr 1095204284], length 0
+14:04:02.234970 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [.], ack 548, win 501, options [nop,nop,TS val 2910251424 ecr 2871231926], length 0
+14:04:03.197630 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:04.221701 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:05.245997 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:06.269332 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:07.293710 ARP, Request who-has 10.4.1.1 tell 10.4.1.3, length 46
+14:04:08.317761 IP 10.4.1.3.http > 10.4.1.5.56818: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 3635605589 ecr 1095204284], length 40: HTTP
+14:04:08.317762 IP 10.4.1.3.http > 10.4.1.5.56818: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 3635605589 ecr 1095204284], length 0
+14:04:08.318285 IP 10.4.1.5.56818 > 10.4.1.3.http: Flags [.], ack 41, win 502, options [nop,nop,TS val 1095210410 ecr 3635605589], length 0
+14:04:08.318620 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [P.], seq 89:165, ack 548, win 501, options [nop,nop,TS val 2910257508 ecr 2871231926], length 76
+14:04:08.318917 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [P.], seq 165:201, ack 548, win 501, options [nop,nop,TS val 2910257508 ecr 2871231926], length 36
+14:04:08.319047 IP 10.4.1.4.http-alt > 10.4.1.2.44408: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 3170166758 ecr 3244598976], length 40: HTTP
+14:04:08.319103 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [.], ack 201, win 501, options [nop,nop,TS val 2871238054 ecr 2910257508], length 0
+14:04:08.319293 IP 10.4.1.4.http-alt > 10.4.1.2.44408: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 3170166758 ecr 3244598976], length 0
+14:04:08.319842 IP 10.4.1.2.44408 > 10.4.1.4.http-alt: Flags [.], ack 41, win 502, options [nop,nop,TS val 3244605106 ecr 3170166758], length 0
+14:04:08.324586 IP 10.4.1.2.44408 > 10.4.1.4.http-alt: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 3244605111 ecr 3170166758], length 0
+14:04:08.324642 IP 10.4.1.4.http-alt > 10.4.1.2.44408: Flags [.], ack 130, win 509, options [nop,nop,TS val 3170166764 ecr 3244605111], length 0
+14:04:08.324962 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [P.], seq 548:620, ack 201, win 501, options [nop,nop,TS val 2871238060 ecr 2910257508], length 72
+14:04:08.325662 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [.], ack 620, win 501, options [nop,nop,TS val 2910257515 ecr 2871238060], length 0
+14:04:08.325663 IP 10.4.1.5.56818 > 10.4.1.3.http: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 1095210418 ecr 3635605589], length 0
+14:04:08.325837 IP 10.4.1.5.40632 > 10.4.1.4.ssh: Flags [P.], seq 201:237, ack 620, win 501, options [nop,nop,TS val 2910257515 ecr 2871238060], length 36
+14:04:08.326051 IP 10.4.1.3.http > 10.4.1.5.56818: Flags [.], ack 130, win 509, options [nop,nop,TS val 3635605598 ecr 1095210418], length 0
+14:04:08.367863 IP 10.4.1.4.ssh > 10.4.1.5.40632: Flags [.], ack 237, win 501, options [nop,nop,TS val 2871238103 ecr 2910257515], length 0
+
+- Inici de connexió entre el client (10.4.1.2) i el túnel remot a 10.4.1.4:8888:
+
+  10.4.1.2.49740 > 10.4.1.4.http-alt: GET / HTTP/1.1
+
+Això és una petició des del client al port http-alt (8888) a 10.4.1.4.
+
+- 10.4.1.4 reenvia el trànsit via SSH a 10.4.1.5 (túnel actiu)
+
+  10.4.1.4.ssh > 10.4.1.5.40632
+  10.4.1.5.40632 > 10.4.1.4.ssh
+
+Comunicació SSH entre 10.4.1.4 i 10.4.1.5, utilitzant el canal xifrat del túnel.
+
+- 10.4.1.5 reenvia la petició al servidor web 10.4.1.3:80:
+
+  10.4.1.5.59568 > 10.4.1.3.http: GET / HTTP/1.1
+
+Això indica que el túnel redirigeix correctament la petició al servidor HTTP de 10.4.1.3.
+
+- Resposta HTTP des de 10.4.1.3 cap a 10.4.1.5:
+
+  10.4.1.3.http > 10.4.1.5.59568: HTTP 200 OK...
+
+El servidor web ha respost correctament.
+
+- La resposta arriba de tornada a 10.4.1.2 des de 10.4.1.4:8888:
+
+  10.4.1.4.http-alt > 10.4.1.2.49740: HTTP
+
+Això indica que la resposta ha travessat tot el túnel en sentit invers fins a arribar al client original.
+
+Bibliografía:
+
+https://wiki.debian.org/SSH
+https://linux.die.net/man/1/ssh
+https://www.ssh.com/ssh/public-key-authentication
+https://serverfault.com/questions/660160/openssh-difference-between-internal-sftp-and-sftp-server
+https://linux.die.net/man/1/sshfs
+https://gorbe.io/posts/openssh/sftp/chroot/
+https://linuxize.com/post/how-to-set-up-sftp-chroot-jail
+https://ostechnix.com/setup-chrooted-sftp-linux/
+https://sftpcloud.io/learn/linux/setting-up-and-configuring-sftp-server-debian
+

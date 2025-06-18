@@ -1,0 +1,24 @@
+Script iniciado en 2025-05-29 19:26:27+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@client_vpn:/mnt/shared# cat /etc/openvpn/client.conf
+client
+dev tun
+proto udp
+remote 10.4.10.4 1194
+resolv-retry infinite
+nobind
+user nobody
+group nogroup
+persist-key
+persist-tun
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/client.crt
+key /etc/openvpn/client.key
+remote-cert-tls server
+tls-auth /etc/openvpn/ta.key 1
+cipher AES-256-CBC
+data-ciphers AES-256-GCM:AES-256-CBC
+verb 3
+root@client_vpn:/mnt/shared# exit
+exit
+
+Script terminado en 2025-05-29 19:26:56+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

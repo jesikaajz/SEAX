@@ -1,0 +1,7 @@
+Script iniciado en 2025-05-29 20:46:32+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@client_vpn:/mnt/shared# ip route get 10.4.1.1
+10.4.1.1 dev tun0 src 10.4.1.2 uid 0 
+    cache 
+root@client_vpn:/mnt/shared# exit
+
+Script terminado en 2025-05-29 20:46:45+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

@@ -1,0 +1,25 @@
+
+Script iniciado en 2025-05-12 18:49:10+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-ssh:~# cat /etc/nftables.conf
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+	chain input {
+		type filter hook input priority 0; policy drop;
+		ct state established,related accept
+		iifname "lo" accept
+		icmp type echo-request accept
+		ip saddr 10.4.1.0/2 tcp dport 22 accept
+	}
+	chain forward {
+		type filter hook forward priority filter;
+	}
+	chain output {
+		type filter hook output priority filter;
+	}
+}
+root@server-ssh:~# exit
+exit
+Script terminado en 2025-05-12 18:49:23+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

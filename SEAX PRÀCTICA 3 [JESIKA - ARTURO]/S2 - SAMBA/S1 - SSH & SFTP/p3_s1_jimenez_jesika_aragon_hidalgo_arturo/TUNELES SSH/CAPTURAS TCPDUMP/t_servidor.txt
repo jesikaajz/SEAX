@@ -1,0 +1,48 @@
+reading from file t_servidor.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+23:39:41.969282 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [S], seq 2153793851, win 64240, options [mss 1460,sackOK,TS val 1406782453 ecr 0,nop,wscale 7], length 0
+23:39:41.969553 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [S.], seq 66113077, ack 2153793852, win 65160, options [mss 1460,sackOK,TS val 1791873704 ecr 1406782453,nop,wscale 7], length 0
+23:39:41.969723 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [.], ack 1, win 502, options [nop,nop,TS val 1406782454 ecr 1791873704], length 0
+23:39:41.969768 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 1406782454 ecr 1791873704], length 128: HTTP: GET / HTTP/1.1
+23:39:41.970152 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [.], ack 129, win 509, options [nop,nop,TS val 1791873704 ecr 1406782454], length 0
+23:39:41.970153 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 3667992915:3667993007, ack 339566844, win 501, options [nop,nop,TS val 4248993525 ecr 737846121], length 92
+23:39:41.970293 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [S], seq 1847901565, win 64240, options [mss 1460,sackOK,TS val 4085760348 ecr 0,nop,wscale 7], length 0
+23:39:41.970314 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [S.], seq 1893377921, ack 1847901566, win 65160, options [mss 1460,sackOK,TS val 3244034758 ecr 4085760348,nop,wscale 7], length 0
+23:39:41.970524 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 1, win 502, options [nop,nop,TS val 4085760348 ecr 3244034758], length 0
+23:39:41.970525 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 1:45, ack 92, win 501, options [nop,nop,TS val 738286353 ecr 4248993525], length 44
+23:39:41.970747 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 45, win 501, options [nop,nop,TS val 4248993526 ecr 738286353], length 0
+23:39:41.970747 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 92:256, ack 45, win 501, options [nop,nop,TS val 4248993526 ecr 738286353], length 164
+23:39:41.970810 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [P.], seq 1:129, ack 1, win 502, options [nop,nop,TS val 4085760349 ecr 3244034758], length 128: HTTP: GET / HTTP/1.1
+23:39:41.970816 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [.], ack 129, win 509, options [nop,nop,TS val 3244034759 ecr 4085760349], length 0
+23:39:42.014985 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [.], ack 256, win 501, options [nop,nop,TS val 738286398 ecr 4248993526], length 0
+23:39:47.146930 ARP, Request who-has 10.4.1.5 tell 10.4.1.4, length 46
+23:39:47.146930 ARP, Request who-has 10.4.1.3 tell 10.4.1.4, length 46
+23:39:47.146940 ARP, Reply 10.4.1.3 is-at 08:00:27:f3:af:49 (oui Unknown), length 28
+23:39:47.147168 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+23:39:47.189885 ARP, Request who-has 10.4.1.5 tell 10.4.1.2, length 46
+23:39:47.190034 ARP, Reply 10.4.1.5 is-at 08:00:27:9a:71:12 (oui Unknown), length 46
+23:39:47.194701 ARP, Request who-has 10.4.1.4 tell 10.4.1.5, length 46
+23:39:47.194701 ARP, Request who-has 10.4.1.2 tell 10.4.1.5, length 46
+23:39:47.194824 ARP, Reply 10.4.1.2 is-at 08:00:27:30:fe:25 (oui Unknown), length 46
+23:39:47.194824 ARP, Reply 10.4.1.4 is-at 08:00:27:29:82:18 (oui Unknown), length 46
+23:39:47.217797 ARP, Request who-has 10.4.1.4 tell 10.4.1.3, length 28
+23:39:47.218145 ARP, Reply 10.4.1.4 is-at 08:00:27:29:82:18 (oui Unknown), length 46
+23:39:48.113839 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 3244040902 ecr 4085760349], length 40: HTTP
+23:39:48.113864 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 3244040902 ecr 4085760349], length 0
+23:39:48.114363 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 41, win 502, options [nop,nop,TS val 4085766492 ecr 3244040902], length 0
+23:39:48.114536 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 45:121, ack 256, win 501, options [nop,nop,TS val 738292497 ecr 4248993526], length 76
+23:39:48.114917 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [P.], seq 1:41, ack 129, win 509, options [nop,nop,TS val 1791879849 ecr 1406782454], length 40: HTTP
+23:39:48.114918 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [.], ack 41, win 502, options [nop,nop,TS val 1406788599 ecr 1791879849], length 0
+23:39:48.155021 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [.], ack 42, win 502, options [nop,nop,TS val 4085766533 ecr 3244040902], length 0
+23:39:48.158708 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 121, win 501, options [nop,nop,TS val 4248999714 ecr 738292497], length 0
+23:39:48.159032 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 121:157, ack 256, win 501, options [nop,nop,TS val 738292542 ecr 4248999714], length 36
+23:39:48.159102 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 157, win 501, options [nop,nop,TS val 4248999714 ecr 738292542], length 0
+23:39:48.159306 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [F.], seq 41, ack 129, win 509, options [nop,nop,TS val 1791879893 ecr 1406788599], length 0
+23:39:48.159659 IP 10.4.1.2.50768 > 10.4.1.5.http-alt: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 1406788644 ecr 1791879893], length 0
+23:39:48.159724 IP 10.4.1.5.http-alt > 10.4.1.2.50768: Flags [.], ack 130, win 509, options [nop,nop,TS val 1791879894 ecr 1406788644], length 0
+23:39:48.159773 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [P.], seq 256:328, ack 157, win 501, options [nop,nop,TS val 4248999715 ecr 738292542], length 72
+23:39:48.159864 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [.], ack 328, win 501, options [nop,nop,TS val 738292543 ecr 4248999715], length 0
+23:39:48.159968 IP 10.4.1.4.46696 > 10.4.1.3.http: Flags [F.], seq 129, ack 42, win 502, options [nop,nop,TS val 4085766538 ecr 3244040902], length 0
+23:39:48.159984 IP 10.4.1.3.http > 10.4.1.4.46696: Flags [.], ack 130, win 509, options [nop,nop,TS val 3244040948 ecr 4085766538], length 0
+23:39:48.160195 IP 10.4.1.4.ssh > 10.4.1.5.44150: Flags [P.], seq 157:193, ack 328, win 501, options [nop,nop,TS val 738292543 ecr 4248999715], length 36
+23:39:48.202771 IP 10.4.1.5.44150 > 10.4.1.4.ssh: Flags [.], ack 193, win 501, options [nop,nop,TS val 4248999758 ecr 738292543], length 0
+

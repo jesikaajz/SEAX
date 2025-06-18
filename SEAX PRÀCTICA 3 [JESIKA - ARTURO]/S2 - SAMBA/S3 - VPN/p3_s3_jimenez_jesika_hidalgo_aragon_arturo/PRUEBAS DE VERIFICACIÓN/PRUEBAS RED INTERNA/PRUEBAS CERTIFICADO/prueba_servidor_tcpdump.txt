@@ -1,0 +1,79 @@
+Script iniciado en 2025-05-29 20:58:36+02:00
+
+root@server_vpn:/mnt/shared# tcpdump -i enp0s3 udp port 1194
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on enp0s3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C
+20:58:53.747351 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 40
+
+1 packet captured
+5 packets received by filter
+0 packets dropped by kernel
+
+root@server_vpn:/mnt/shared# tcpdump -i enp0s3 udp port 1194 -w servidor_captura_tcpdump.pcap
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C
+54 packets captured
+54 packets received by filter
+0 packets dropped by kernel
+
+root@server_vpn:/mnt/shared# tcpdump -r servidor_captura_tcpdump.pcap
+reading from file servidor_captura_tcpdump.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+20:59:37.582374 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:37.583335 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:38.587381 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:38.587860 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:39.592162 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:39.592775 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:40.593978 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:40.594515 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:41.597182 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:41.597750 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:42.600523 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:42.600825 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:43.604385 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:43.604893 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:44.607331 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:44.607859 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:45.608666 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:45.609312 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:46.611676 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:46.612285 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:47.617582 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:47.618076 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:48.622493 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:48.622883 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:49.626174 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:49.626707 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:50.631628 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:50.631928 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:51.635426 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:51.635709 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:52.639473 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:52.639815 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:53.643313 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:53.643673 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:54.647470 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:54.647742 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:55.650282 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:55.650541 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:56.654370 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:56.654696 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:57.656811 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:57.657436 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:58.658346 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:58.658930 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+20:59:59.663186 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+20:59:59.663516 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+21:00:00.668953 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+21:00:00.669250 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+21:00:01.671400 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+21:00:01.671690 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+21:00:02.676811 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+21:00:02.677171 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+21:00:03.680882 IP 10.4.10.5.44014 > 10.4.10.4.openvpn: UDP, length 108
+21:00:03.681218 IP 10.4.10.4.openvpn > 10.4.10.5.44014: UDP, length 108
+
+root@server_vpn:/mnt/shared# exit
+
+Script terminado en 2025-05-29 21:00:45+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

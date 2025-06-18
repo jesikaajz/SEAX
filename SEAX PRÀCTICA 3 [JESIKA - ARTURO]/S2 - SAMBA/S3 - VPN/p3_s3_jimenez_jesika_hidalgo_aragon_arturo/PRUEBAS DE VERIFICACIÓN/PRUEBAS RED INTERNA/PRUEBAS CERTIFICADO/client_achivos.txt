@@ -1,0 +1,122 @@
+Script iniciado en 2025-05-29 19:27:14+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@sclient_vpnerver_vpn:/mnt/shared# cd /etc/openvpn
+root@client_vpn:/etc/openvpn# ls
+ca.crt	client	client.conf  client.crt  client.key  server  static.key  ta.key  update-resolv-conf
+root@server_vpn:/etc/openvpn# cat ca.crt
+-----BEGIN CERTIFICATE-----
+MIIDNjCCAh6gAwIBAgIUceHwIJ1T61UbeFeuwj5XO4kphzAwDQYJKoZIhvcNAQEL
+BQAwDzENMAsGA1UEAwwEc2VheDAeFw0yNTA1MjgxNzI4NTBaFw0zNTA1MjYxNzI4
+NTBaMA8xDTALBgNVBAMMBHNlYXgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQCefC25eb9qHcLB/n9vaofKxmxZvOpPehPxfNXWv6m5LywHEfFS1atBqd5k
+KZZnp4VthZz6LpvfX2ZYqf72em+uiV+QWvHZeoXKPVF6DwyqBgZqEKthoH3TKQW6
+20obbprsEbiG9y13LxO8Mwj1/0qAjj+/UNBUQ5ou2WPaH60IVBAFyoEPfxlV9SJN
+Mni/GTdyf0YXhNUwdzvoK6u1GJFtE/29TKDr4nn0GAwc5OjOLDeIehkNBkrRZdf1
+YgEKJSWPpJACT7sraJC5E8UoMLD3/QayyKfbo/7kpBjije+pk5E3Olr8FfG6kAfw
+Zs0HOvDtSX+5Rh1htaUMEYfg6FHLAgMBAAGjgYkwgYYwDAYDVR0TBAUwAwEB/zAd
+BgNVHQ4EFgQUJzubtQyXsfPb4uU65IV9y+/XfWUwSgYDVR0jBEMwQYAUJzubtQyX
+sfPb4uU65IV9y+/XfWWhE6QRMA8xDTALBgNVBAMMBHNlYXiCFHHh8CCdU+tVG3hX
+rsI+VzuJKYcwMAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAQEAHVPgkvHI
+m/ZZ4F4CR1R8rLRy8kVWBPpCGrKaaEZf1FjVhpzQucWK5BNidseslaaWz0afKGTO
+Y8gI51DX8teKoU0CHxrRo6A4x5WESOSx6iTq2nnR49o3XBCnOIOS63jat9fnbP5A
+rr2nAERiUX6KaRzEP+nkS48cVN9LhXRBc0RGNEnhNZJ7U9egbljEQZMCmxlMIPnc
+cK670T4PKY+gmr4n/Su9FsldjTiIvXhpuaI8Ifi9nvRC9kWi0ABHHyVORk69zZO2
+XGri9/x2pTTeQKtuVDqN7LGzDliVwpkD7BF2fU2qJKrUJTx9Ybj31bpzCMsok6wp
+H55ObtmPlDmr1Q==
+-----END CERTIFICATE-----
+root@client_vpn:/etc/openvpn# cat client.conf
+client
+dev tun
+proto udp
+remote 10.4.10.4 1194
+resolv-retry infinite
+nobind
+user nobody
+group nogroup
+persist-key
+persist-tun
+ca /etc/openvpn/ca.crt
+cert /etc/openvpn/client.crt
+key /etc/openvpn/client.key
+remote-cert-tls server
+tls-auth /etc/openvpn/ta.key 1
+cipher AES-256-CBC
+data-ciphers AES-256-GCM:AES-256-CBC
+verb 3
+root@client_vpn:/etc/openvpn# cat client.crt
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            30:07:a5:7b:f8:d7:6d:7e:32:fc:f9:5e:07:ff:75:c5
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=seax
+        Validity
+            Not Before: May 28 17:33:22 2025 GMT
+            Not After : Aug 31 17:33:22 2027 GMT
+        Subject: CN=client_seax
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:b9:81:98:ac:90:af:79:56:80:9b:3d:44:bd:54:
+                    80:22:cf:6d:61:25:52:02:2c:09:a8:d7:a9:50:38:
+                    ...
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                D0:D4:0D:EF:81:35:EC:23:E8:25:DC:67:62:39:FB:E2:41:3C:2F:90
+            X509v3 Authority Key Identifier: 
+                keyid:27:3B:9B:B5:0C:97:B1:F3:DB:E2:E5:3A:E4:85:7D:CB:EF:D7:7D:65
+                DirName:/CN=seax
+                serial:71:E1:F0:20:9D:53:EB:55:1B:78:57:AE:C2:3E:57:3B:89:29:87:30
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        48:70:92:44:1e:45:bd:a6:1d:6d:5f:43:70:15:87:f2:c4:1f:
+        ...
+        6d:3b:db:43
+-----BEGIN CERTIFICATE-----
+MIIDSzCCAjOgAwIBAgIQMAele/jXbX4y/PleB/91xTANBgkqhkiG9w0BAQsFADAP
+MQ0wCwYDVQQDDARzZWF4MB4XDTI1MDUyODE3MzMyMloXDTI3MDgzMTE3MzMyMlow
+FjEUMBIGA1UEAwwLY2xpZW50X3NlYXgwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQC5gZiskK95VoCbPUS9VIAiz21hJVICLAmo16lQOA6KVAvHW3cUIBct
+...
+-----END CERTIFICATE-----
+root@server_vpn:/etc/openvpn# cat client.key
+-----BEGIN PRIVATE KEY-----
+MIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQC5gZiskK95VoCb
+PUS9VIAiz21hJVICLAmo16lQOA6KVAvHW3cUIBct7ApCkydn4WUIXdzKsLB2WHFK
+...
+-----END PRIVATE KEY-----
+
+
+root@client_vpn:/etc/openvpn# systemctl status openvpn@client
+● openvpn@client.service - OpenVPN connection to client
+     Loaded: loaded (/lib/systemd/system/openvpn@.service; enabled-runtime; preset: enabled)
+     Active: active (running) since Thu 2025-05-29 19:23:29 CEST; 5min ago
+       Docs: man:openvpn(8)
+             https://community.openvpn.net/openvpn/wiki/Openvpn24ManPage
+             https://community.openvpn.net/openvpn/wiki/HOWTO
+   Main PID: 664 (openvpn)
+     Status: "Initialization Sequence Completed"
+      Tasks: 1 (limit: 10)
+     Memory: 4.0M
+        CPU: 168ms
+     CGroup: /system.slice/system-openvpn.slice/openvpn@client.service
+             └─664 /usr/sbin/openvpn --daemon ovpn-client --status /run/openvpn/client.status 10 --cd /etc/openvpn --config /etc/openvpn/client.conf --writepid
+
+may 29 19:23:43 seax2 ovpn-client[664]: net_iface_mtu_set: mtu 1500 for tun0
+may 29 19:23:43 seax2 ovpn-client[664]: net_iface_up: set tun0 up
+may 29 19:23:43 seax2 ovpn-client[664]: net_addr_v4_add: 10.4.10.2/24 dev tun0
+may 29 19:23:43 seax2 ovpn-client[664]: UID set to nobody
+may 29 19:23:43 seax2 ovpn-client[664]: GID set to nogroup
+may 29 19:23:43 seax2 ovpn-client[664]: Capabilities retained: CAP_NET_ADMIN
+may 29 19:23:43 seax2 ovpn-client[664]: Initialization Sequence Completed
+may 29 19:23:43 seax2 ovpn-client[664]: Data Channel: cipher 'AES-256-GCM', peer-id: 0
+may 29 19:23:43 seax2 ovpn-client[664]: Timers: ping 10, ping-restart 120
+may 29 19:23:43 seax2 ovpn-client[664]: Protocol options: protocol-flags cc-exit tls-ekm dyn-tls-crypt

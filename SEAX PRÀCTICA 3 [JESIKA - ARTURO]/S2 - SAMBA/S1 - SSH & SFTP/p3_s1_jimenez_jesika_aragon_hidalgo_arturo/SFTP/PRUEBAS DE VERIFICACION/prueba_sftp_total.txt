@@ -1,0 +1,374 @@
+prueba_compartir_fichero_get
+
+Script iniciado en 2025-05-08 17:23:28+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@client-ssh:~# ls
+prueba_compartir_fichero_sftp  typescript
+root@client-ssh:~# sftp entel@10.4.1.3
+
+sftp> pwd
+Remote working directory: /entel
+sftp> ls
+prueba1.txt  
+sftp> get prueb
+sftp> get prueba1.txt 
+Fetching /entel/prueba1.txt to prueba1.txt
+
+prueba1.txt                                                                                                                     0%    0     0.0KB/s   --:-- ETA
+prueba1.txt                                                                                                                   100%  117    31.4KB/s   00:00    
+sftp> cd ..
+sftp> ls
+entel   root    shared  
+sftp> cd root
+sftp> ls
+remote readdir("/root"): Permission denied
+sftp> cd 
+sftp> ls
+prueba1.txt  
+sftp> exit
+
+root@client-ssh:~# ls
+prueba1.txt  prueba_compartir_fichero_sftp  typescript
+root@client-ssh:~# cat  prueba1.txt 
+hola! esto es una prueba de funcionamiento de que se pueden compartir los ficheros utilizando sftp
+desde el cliente.
+root@client-ssh:~# exit
+exit
+
+Script terminado en 2025-05-08 17:24:26+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+
+---------------------------------------------------------------------------------------------------------
+
+prueba_sftp_client
+
+Script iniciado en 2025-05-12 17:42:06+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@client-ssh:~# sftp -v entel@10.4.1.3
+OpenSSH_9.2p1 Debian-2+deb12u5, OpenSSL 3.0.15 3 Sep 2024
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: include /etc/ssh/ssh_config.d/*.conf matched no files
+debug1: /etc/ssh/ssh_config line 21: Applying options for *
+debug1: Connecting to 10.4.1.3 [10.4.1.3] port 22.
+debug1: Connection established.
+debug1: identity file /root/.ssh/id_rsa type 0
+debug1: identity file /root/.ssh/id_rsa-cert type -1
+debug1: identity file /root/.ssh/id_ecdsa type -1
+debug1: identity file /root/.ssh/id_ecdsa-cert type -1
+debug1: identity file /root/.ssh/id_ecdsa_sk type -1
+debug1: identity file /root/.ssh/id_ecdsa_sk-cert type -1
+debug1: identity file /root/.ssh/id_ed25519 type -1
+debug1: identity file /root/.ssh/id_ed25519-cert type -1
+debug1: identity file /root/.ssh/id_ed25519_sk type -1
+debug1: identity file /root/.ssh/id_ed25519_sk-cert type -1
+debug1: identity file /root/.ssh/id_xmss type -1
+debug1: identity file /root/.ssh/id_xmss-cert type -1
+debug1: identity file /root/.ssh/id_dsa type -1
+debug1: identity file /root/.ssh/id_dsa-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u5
+debug1: Remote protocol version 2.0, remote software version OpenSSH_9.2p1 Debian-2+deb12u5
+debug1: compat_banner: match: OpenSSH_9.2p1 Debian-2+deb12u5 pat OpenSSH* compat 0x04000000
+debug1: Authenticating to 10.4.1.3:22 as 'entel'
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: algorithm: sntrup761x25519-sha512
+debug1: kex: host key algorithm: ssh-ed25519
+debug1: kex: server->client cipher: aes256-ctr MAC: umac-64-etm@openssh.com compression: none
+debug1: kex: client->server cipher: aes256-ctr MAC: umac-64-etm@openssh.com compression: none
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug1: SSH2_MSG_KEX_ECDH_REPLY received
+debug1: Server host key: ssh-ed25519 SHA256:kUyYkOGmAApsRu6lCGxkKjknKmiT1XJut9c8Ft7mOC4
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: Host '10.4.1.3' is known and matches the ED25519 host key.
+debug1: Found key in /root/.ssh/known_hosts:1
+debug1: ssh_packet_send2_wrapped: resetting send seqnr 3
+debug1: rekey out after 4294967296 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: ssh_packet_read_poll2: resetting read seqnr 3
+debug1: SSH2_MSG_NEWKEYS received
+debug1: rekey in after 4294967296 blocks
+debug1: Will attempt key: /root/.ssh/id_rsa RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+debug1: Will attempt key: /root/.ssh/id_ecdsa 
+debug1: Will attempt key: /root/.ssh/id_ecdsa_sk 
+debug1: Will attempt key: /root/.ssh/id_ed25519 
+debug1: Will attempt key: /root/.ssh/id_ed25519_sk 
+debug1: Will attempt key: /root/.ssh/id_xmss 
+debug1: Will attempt key: /root/.ssh/id_dsa 
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,sk-ssh-ed25519@openssh.com,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,webauthn-sk-ecdsa-sha2-nistp256@openssh.com,ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512>
+debug1: kex_input_ext_info: publickey-hostbound@openssh.com=<0>
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: publickey,password
+debug1: Next authentication method: publickey
+debug1: Offering public key: /root/.ssh/id_rsa RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+debug1: Server accepts key: /root/.ssh/id_rsa RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+Authenticated to 10.4.1.3 ([10.4.1.3]:22) using "publickey".
+debug1: channel 0: new session [client-session] (inactive timeout: 0)
+debug1: Requesting no-more-sessions@openssh.com
+debug1: Entering interactive session.
+debug1: pledge: filesystem
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts for 10.4.1.3 / (none)
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts2 for 10.4.1.3 / (none)
+debug1: client_input_hostkeys: hostkeys file /root/.ssh/known_hosts2 does not exist
+debug1: client_input_hostkeys: no new or deprecated keys from server
+debug1: Remote: /sftp/entel/files/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: Remote: /sftp/entel/files/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug1: Sending environment.
+debug1: channel 0: setting env LANG = "es_ES.UTF-8"
+debug1: Sending subsystem: sftp
+debug1: pledge: fork
+Connected to 10.4.1.3.
+sftp> exit
+debug1: client_input_channel_req: channel 0 rtype exit-status reply 0
+debug1: channel 0: free: client-session, nchannels 1
+Transferred: sent 4592, received 4604 bytes, in 5.5 seconds
+Bytes per second: sent 836.6, received 838.8
+debug1: Exit status 0
+root@client-ssh:~# exit
+exit
+
+Script terminado en 2025-05-12 17:42:40+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+
+--------------------------------------------------------------------------------------------
+prueba_funcionamiento_systemctl
+
+Script iniciado en 2025-05-12 17:44:11+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-ssh:~# systemctl status ssh
+
+● ssh.service - OpenBSD Secure Shell server[m
+     Loaded: loaded file://server-ssh/lib/systemd/system/ssh.service /lib/systemd/system/ssh.service enabled preset:enabled
+     Active: active (running) since Mon 2025-05-12 17:29:02 CEST; 15min ago
+       Docs: man:sshd(8) man:sshd(8)
+             man:sshd_config(5) man:sshd_config(5)
+    Process: 540 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 543 (sshd)
+      Tasks: 245m (limit: 1108)
+     Memory: 6.6M
+        CPU: 648ms
+     CGroup: /system.slice/ssh.service
+             └─543 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+may 12 17:36:03 server-ssh sshd[1142]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 17:39:07 server-ssh sshd[1160]: Accepted publickey for entel from 10.4.1.2 port 42618 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 17:39:07 server-ssh sshd[1160]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 17:39:08 server-ssh sshd[1160]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 17:41:16 server-ssh sshd[1171]: Accepted publickey for entel from 10.4.1.2 port 35618 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 17:41:16 server-ssh sshd[1171]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 17:41:16 server-ssh sshd[1171]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 17:42:32 server-ssh sshd[1180]: Accepted publickey for entel from 10.4.1.2 port 36058 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 17:42:32 server-ssh sshd[1180]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 17:42:32 server-ssh sshd[1180]: pam_env(sshd:session): deprecated reading of user environment enabled
+
+root@server-ssh:~# exit
+exit
+-------------------------------------------------------------------------------------------
+
+prueba_carpeta_compartida
+
+Script iniciado en 2025-05-12 17:44:43+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@client-ssh:~# cd /mnt/entel
+root@client-ssh:/mnt/entel# ls
+id_rsa.pub  prueba1.txt  prueba2.txt  sftp_cliente.txt
+root@client-ssh:/mnt/entel# exit
+exit
+
+Script terminado en 2025-05-12 17:45:02+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+
+Script iniciado en 2025-05-12 17:45:31+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-ssh:/sftp/entel/files# ls
+id_rsa.pub  prueba1.txt  prueba2.txt  prueba6.txt  sftp_cliente.txt
+root@server-ssh:/sftp/entel/files# exit
+exit
+
+Script terminado en 2025-05-12 17:45:36+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+------------------------------------------------------------------------------------------------
+
+prueba_mixta
+
+Script iniciado en 2025-05-12 18:23:15+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-ssh:~# systemctl status ssh
+
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded file://server-ssh/lib/systemd/system/ssh.service /lib/systemd/system/ssh.service enabled preset: enabled
+     Active: active (running) since Mon 2025-05-12 17:29:02 CEST; 54min ago
+       Docs: man:sshd(8) man:sshd(8)
+             man:sshd_config(5) man:sshd_config(5)
+    Process: 540 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 543 (sshd)
+      Tasks: 1[0;38;5;245m (limit: 1108)
+     Memory: 6.6M
+        CPU: 907ms
+     CGroup: /system.slice/ssh.service
+             └─543 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+
+may 12 17:42:32 server-ssh sshd[1180]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 17:56:11 server-ssh sshd[1290]: Accepted publickey for entel from 10.4.1.2 port 53156 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 17:56:11 server-ssh sshd[1290]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 17:56:11 server-ssh sshd[1290]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 18:18:57 server-ssh sshd[2209]: Accepted publickey for entel from 10.4.1.2 port 50096 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 18:18:57 server-ssh sshd[2209]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 18:18:58 server-ssh sshd[2209]: pam_env(sshd:session): deprecated reading of user environment enabled
+may 12 18:20:07 server-ssh sshd[2231]: Accepted publickey for entel from 10.4.1.2 port 51440 ssh2: RSA SHA256:rWtE/xAqNCPZAmaxpeD1bMQUknZkteNVAphDU8o4CLA
+may 12 18:20:07 server-ssh sshd[2231]: pam_unix(sshd:session): session opened for user entel(uid=1000) by (uid=0)
+may 12 18:20:07 server-ssh sshd[2231]: pam_env(sshd:session): deprecated reading of user environment enabled
+
+root@server-ssh:~# ps aux | grep -i ssh
+
+root         543  0.0  0.9  15440  9292 ?        Ss   17:29   0:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+root        2231  0.0  1.1  17832 10932 ?        Ss   18:20   0:00 sshd: entel [priv]
+entel       2237  0.0  0.6  17992  6796 ?        S    18:20   0:00 sshd: entel@notty
+entel       2238  0.0  0.3  17832  3924 ?        Ss   18:20   0:00 sshd: entel@internal-sftp
+root        2257  0.0  0.2   6356  2064 pts/0    S+   18:23   0:00 grep -i ssh
+
+root@server-ssh:~# ss -tlp
+State           Recv-Q          Send-Q                   Local Address:Port                   Peer Address:Port         Process                                 
+LISTEN          0               128                            0.0.0.0:ssh                         0.0.0.0:*             users:(("sshd",pid=543,fd=3))          
+LISTEN          0               128                               [::]:ssh                            [::]:*             users:(("sshd",pid=543,fd=4)) 
+         
+root@server-ssh:~# tcpdump -n -s 0 host 10.4.1.2 and 10.4.1.3 -w servidor_ssh.pcap
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C52 packets captured
+52 packets received by filter
+0 packets dropped by kernel
+
+root@server-ssh:~# tcpdump -r servidor_ssh.pcap
+
+reading from file servidor_ssh.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+18:24:50.488615 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [P.], seq 3186857812:3186857840, ack 4160598528, win 501, options [nop,nop,TS val 2955947481 ecr 1319235176], length 28
+18:24:50.488674 IP 10.4.1.3.ssh > 10.4.1.2.51440: Flags [.], ack 28, win 501, options [nop,nop,TS val 1319277775 ecr 2955947481], length 0
+18:24:50.491537 IP 10.4.1.3.ssh > 10.4.1.2.51440: Flags [P.], seq 1:45, ack 28, win 501, options [nop,nop,TS val 1319277778 ecr 2955947481], length 44
+18:24:50.492256 IP 10.4.1.3.ssh > 10.4.1.2.51440: Flags [P.], seq 45:101, ack 28, win 501, options [nop,nop,TS val 1319277778 ecr 2955947481], length 56
+18:24:50.495253 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [.], ack 101, win 501, options [nop,nop,TS val 2955947488 ecr 1319277778], length 0
+18:24:50.495254 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [P.], seq 28:56, ack 101, win 501, options [nop,nop,TS val 2955947488 ecr 1319277778], length 28
+18:24:50.496129 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [P.], seq 56:116, ack 101, win 501, options [nop,nop,TS val 2955947489 ecr 1319277778], length 60
+18:24:50.496853 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [F.], seq 116, ack 101, win 501, options [nop,nop,TS val 2955947490 ecr 1319277778], length 0
+18:24:50.497081 IP 10.4.1.3.ssh > 10.4.1.2.51440: Flags [.], ack 117, win 501, options [nop,nop,TS val 1319277783 ecr 2955947488], length 0
+18:24:50.513276 IP 10.4.1.3.ssh > 10.4.1.2.51440: Flags [F.], seq 101, ack 117, win 501, options [nop,nop,TS val 1319277799 ecr 2955947488], length 0
+18:24:50.515828 IP 10.4.1.2.51440 > 10.4.1.3.ssh: Flags [.], ack 102, win 501, options [nop,nop,TS val 2955947508 ecr 1319277799], length 0
+18:24:51.796611 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [S], seq 2947729844, win 64240, options [mss 1460,sackOK,TS val 2955948789 ecr 0,nop,wscale 7], length 0
+18:24:51.796877 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [S.], seq 1582735378, ack 2947729845, win 65160, options [mss 1460,sackOK,TS val 1319279083 ecr 2955948789,nop,wscale 7], length 0
+18:24:51.799301 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 1, win 502, options [nop,nop,TS val 2955948792 ecr 1319279083], length 0
+18:24:51.800942 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 1:41, ack 1, win 502, options [nop,nop,TS val 2955948794 ecr 1319279083], length 40: SSH: SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u5
+18:24:51.800975 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [.], ack 41, win 509, options [nop,nop,TS val 1319279087 ecr 2955948794], length 0
+18:24:51.829551 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 1:41, ack 41, win 509, options [nop,nop,TS val 1319279116 ecr 2955948794], length 40: SSH: SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u5
+18:24:51.831930 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 41, win 502, options [nop,nop,TS val 2955948825 ecr 1319279116], length 0
+18:24:51.835289 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 41:1465, ack 41, win 502, options [nop,nop,TS val 2955948827 ecr 1319279116], length 1424
+18:24:51.837653 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 41:1025, ack 1465, win 501, options [nop,nop,TS val 1319279124 ecr 2955948827], length 984
+18:24:51.889927 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 1025, win 501, options [nop,nop,TS val 2955948883 ecr 1319279124], length 0
+18:24:51.989983 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 1465:2673, ack 1025, win 501, options [nop,nop,TS val 2955948983 ecr 1319279124], length 1208
+18:24:52.019970 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 1025:2589, ack 2673, win 501, options [nop,nop,TS val 1319279306 ecr 2955948983], length 1564
+18:24:52.023072 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 2589, win 500, options [nop,nop,TS val 2955949015 ecr 1319279306], length 0
+18:24:52.079916 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 2673:2689, ack 2589, win 501, options [nop,nop,TS val 2955949073 ecr 1319279306], length 16
+18:24:52.122879 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [.], ack 2689, win 501, options [nop,nop,TS val 1319279409 ecr 2955949073], length 0
+18:24:52.124504 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 2689:2733, ack 2589, win 501, options [nop,nop,TS val 2955949118 ecr 1319279409], length 44
+18:24:52.124564 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [.], ack 2733, win 501, options [nop,nop,TS val 1319279411 ecr 2955949118], length 0
+18:24:52.125668 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 2589:2633, ack 2733, win 501, options [nop,nop,TS val 1319279412 ecr 2955949118], length 44
+18:24:52.127404 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 2633, win 501, options [nop,nop,TS val 2955949120 ecr 1319279412], length 0
+18:24:52.128274 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 2733:2793, ack 2633, win 501, options [nop,nop,TS val 2955949121 ecr 1319279412], length 60
+18:24:52.136457 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 2633:2677, ack 2793, win 501, options [nop,nop,TS val 1319279423 ecr 2955949121], length 44
+18:24:52.139547 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 2793:3285, ack 2677, win 501, options [nop,nop,TS val 2955949132 ecr 1319279423], length 492
+18:24:52.141614 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 2677:3137, ack 3285, win 501, options [nop,nop,TS val 1319279428 ecr 2955949132], length 460
+18:24:52.151821 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 3285:4273, ack 3137, win 501, options [nop,nop,TS val 2955949145 ecr 1319279428], length 988
+18:24:52.161943 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 3137:3165, ack 4273, win 501, options [nop,nop,TS val 1319279448 ecr 2955949145], length 28
+18:24:52.163971 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 4273:4377, ack 3165, win 501, options [nop,nop,TS val 2955949157 ecr 1319279448], length 104
+18:24:52.206665 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [.], ack 4377, win 501, options [nop,nop,TS val 1319279493 ecr 2955949157], length 0
+18:24:52.232181 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 3165:3941, ack 4377, win 501, options [nop,nop,TS val 1319279518 ecr 2955949157], length 776
+18:24:52.279473 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 3941, win 501, options [nop,nop,TS val 2955949272 ecr 1319279518], length 0
+18:24:52.279508 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 3941:4141, ack 4377, win 501, options [nop,nop,TS val 1319279566 ecr 2955949272], length 200
+18:24:52.281040 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 4141, win 501, options [nop,nop,TS val 2955949274 ecr 1319279566], length 0
+18:24:52.283068 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 4377:4481, ack 4141, win 501, options [nop,nop,TS val 2955949276 ecr 1319279566], length 104
+18:24:52.283111 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [.], ack 4481, win 501, options [nop,nop,TS val 1319279569 ecr 2955949276], length 0
+18:24:52.284705 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 4141:4197, ack 4481, win 501, options [nop,nop,TS val 1319279571 ecr 2955949276], length 56
+18:24:52.287071 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 4481:4525, ack 4197, win 501, options [nop,nop,TS val 2955949280 ecr 1319279571], length 44
+18:24:52.288344 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 4197:4545, ack 4525, win 501, options [nop,nop,TS val 1319279574 ecr 2955949280], length 348
+18:24:52.291935 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 4525:4585, ack 4545, win 501, options [nop,nop,TS val 2955949284 ecr 1319279574], length 60
+18:24:52.292321 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 4545:4621, ack 4585, win 501, options [nop,nop,TS val 1319279578 ecr 2955949284], length 76
+18:24:52.297427 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [P.], seq 4585:4629, ack 4621, win 501, options [nop,nop,TS val 2955949290 ecr 1319279578], length 44
+18:24:52.298014 IP 10.4.1.3.ssh > 10.4.1.2.48436: Flags [P.], seq 4621:4681, ack 4629, win 501, options [nop,nop,TS val 1319279584 ecr 2955949290], length 60
+18:24:52.342212 IP 10.4.1.2.48436 > 10.4.1.3.ssh: Flags [.], ack 4681, win 501, options [nop,nop,TS val 2955949335 ecr 1319279584], length 0
+
+root@server-ssh:~# ss -tp
+State             Recv-Q             Send-Q                         Local Address:Port                         Peer Address:Port             Process            
+ESTAB             0                  0                                   10.4.1.3:ssh                              10.4.1.2:48436             users:(("sshd",pid=2268,fd=4),("sshd",pid=2262,fd=4))
+
+root@server-ssh:~# tshark -r servidor_ssh.pcap -j ssh
+
+Running as user "root" and group "root". This could be dangerous.
+    1   0.000000     10.4.1.2 → 10.4.1.3     SSH 94 Client: Encrypted packet (len=28)
+    2   0.000059     10.4.1.3 → 10.4.1.2     TCP 66 22 → 51440 [ACK] Seq=1 Ack=29 Win=501 Len=0 TSval=1319277775 TSecr=2955947481
+    3   0.002922     10.4.1.3 → 10.4.1.2     SSH 110 Server: Encrypted packet (len=44)
+    4   0.003641     10.4.1.3 → 10.4.1.2     SSH 122 Server: Encrypted packet (len=56)
+    5   0.006638     10.4.1.2 → 10.4.1.3     TCP 66 51440 → 22 [ACK] Seq=29 Ack=101 Win=501 Len=0 TSval=2955947488 TSecr=1319277778
+    6   0.006639     10.4.1.2 → 10.4.1.3     SSH 94 Client: Encrypted packet (len=28)
+    7   0.007514     10.4.1.2 → 10.4.1.3     SSH 126 Client: Encrypted packet (len=60)
+    8   0.008238     10.4.1.2 → 10.4.1.3     TCP 66 51440 → 22 [FIN, ACK] Seq=117 Ack=101 Win=501 Len=0 TSval=2955947490 TSecr=1319277778
+    9   0.008466     10.4.1.3 → 10.4.1.2     TCP 66 22 → 51440 [ACK] Seq=101 Ack=118 Win=501 Len=0 TSval=1319277783 TSecr=2955947488
+   10   0.024661     10.4.1.3 → 10.4.1.2     TCP 66 22 → 51440 [FIN, ACK] Seq=101 Ack=118 Win=501 Len=0 TSval=1319277799 TSecr=2955947488
+   11   0.027213     10.4.1.2 → 10.4.1.3     TCP 66 51440 → 22 [ACK] Seq=118 Ack=102 Win=501 Len=0 TSval=2955947508 TSecr=1319277799
+   12   1.307996     10.4.1.2 → 10.4.1.3     TCP 74 48436 → 22 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=2955948789 TSecr=0 WS=128
+   13   1.308262     10.4.1.3 → 10.4.1.2     TCP 74 22 → 48436 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1460 SACK_PERM TSval=1319279083 TSecr=2955948789 WS=128
+   14   1.310686     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=1 Ack=1 Win=64256 Len=0 TSval=2955948792 TSecr=1319279083
+   15   1.312327     10.4.1.2 → 10.4.1.3     SSH 106 Client: Protocol (SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u5)
+   16   1.312360     10.4.1.3 → 10.4.1.2     TCP 66 22 → 48436 [ACK] Seq=1 Ack=41 Win=65152 Len=0 TSval=1319279087 TSecr=2955948794
+   17   1.340936     10.4.1.3 → 10.4.1.2     SSHv2 106 Server: Protocol (SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u5)
+   18   1.343315     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=41 Ack=41 Win=64256 Len=0 TSval=2955948825 TSecr=1319279116
+   19   1.346674     10.4.1.2 → 10.4.1.3     SSHv2 1490 Client: Key Exchange Init
+   20   1.349038     10.4.1.3 → 10.4.1.2     SSHv2 1050 Server: Key Exchange Init
+   21   1.401312     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=1465 Ack=1025 Win=64128 Len=0 TSval=2955948883 TSecr=1319279124
+   22   1.501368     10.4.1.2 → 10.4.1.3     SSHv2 1274 Client: Diffie-Hellman Key Exchange Init
+   23   1.531355     10.4.1.3 → 10.4.1.2     SSHv2 1630 Server: Diffie-Hellman Key Exchange Reply, New Keys
+   24   1.534457     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=2673 Ack=2589 Win=64000 Len=0 TSval=2955949015 TSecr=1319279306
+   25   1.591301     10.4.1.2 → 10.4.1.3     SSHv2 82 Client: New Keys
+   26   1.634264     10.4.1.3 → 10.4.1.2     TCP 66 22 → 48436 [ACK] Seq=2589 Ack=2689 Win=64128 Len=0 TSval=1319279409 TSecr=2955949073
+   27   1.635889     10.4.1.2 → 10.4.1.3     SSHv2 110 Client: 
+   28   1.635949     10.4.1.3 → 10.4.1.2     TCP 66 22 → 48436 [ACK] Seq=2589 Ack=2733 Win=64128 Len=0 TSval=1319279411 TSecr=2955949118
+   29   1.637053     10.4.1.3 → 10.4.1.2     SSHv2 110 Server: 
+   30   1.638789     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=2733 Ack=2633 Win=64128 Len=0 TSval=2955949120 TSecr=1319279412
+   31   1.639659     10.4.1.2 → 10.4.1.3     SSHv2 126 Client: 
+   32   1.647842     10.4.1.3 → 10.4.1.2     SSHv2 110 Server: 
+   33   1.650932     10.4.1.2 → 10.4.1.3     SSHv2 558 Client: 
+   34   1.652999     10.4.1.3 → 10.4.1.2     SSHv2 526 Server: 
+   35   1.663206     10.4.1.2 → 10.4.1.3     SSHv2 1054 Client: 
+   36   1.673328     10.4.1.3 → 10.4.1.2     SSHv2 94 Server: 
+   37   1.675356     10.4.1.2 → 10.4.1.3     SSHv2 170 Client: 
+   38   1.718050     10.4.1.3 → 10.4.1.2     TCP 66 22 → 48436 [ACK] Seq=3165 Ack=4377 Win=64128 Len=0 TSval=1319279493 TSecr=2955949157
+   39   1.743566     10.4.1.3 → 10.4.1.2     SSHv2 842 Server: 
+   40   1.790858     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=4377 Ack=3941 Win=64128 Len=0 TSval=2955949272 TSecr=1319279518
+   41   1.790893     10.4.1.3 → 10.4.1.2     SSHv2 266 Server: 
+   42   1.792425     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=4377 Ack=4141 Win=64128 Len=0 TSval=2955949274 TSecr=1319279566
+   43   1.794453     10.4.1.2 → 10.4.1.3     SSHv2 170 Client: 
+   44   1.794496     10.4.1.3 → 10.4.1.2     TCP 66 22 → 48436 [ACK] Seq=4141 Ack=4481 Win=64128 Len=0 TSval=1319279569 TSecr=2955949276
+   45   1.796090     10.4.1.3 → 10.4.1.2     SSHv2 122 Server: 
+   46   1.798456     10.4.1.2 → 10.4.1.3     SSHv2 110 Client: 
+   47   1.799729     10.4.1.3 → 10.4.1.2     SSHv2 414 Server: 
+   48   1.803320     10.4.1.2 → 10.4.1.3     SSHv2 126 Client: 
+   49   1.803706     10.4.1.3 → 10.4.1.2     SSHv2 142 Server: 
+   50   1.808812     10.4.1.2 → 10.4.1.3     SSHv2 110 Client: 
+   51   1.809399     10.4.1.3 → 10.4.1.2     SSHv2 126 Server: 
+   52   1.853597     10.4.1.2 → 10.4.1.3     TCP 66 48436 → 22 [ACK] Seq=4629 Ack=4681 Win=64128 Len=0 TSval=2955949335 TSecr=1319279584
+root@server-ssh:~# exit
+exit
+
+Script terminado en 2025-05-12 18:25:55+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+
+----------------------------------------------------------------------------------------------------
+
+carpeta_compartida_temporal
+
+Script iniciado en 2025-05-12 18:45:37+02:00 [TERM="linux" TTY="/dev/pts/0" COLUMNS="160" LINES="50"]
+root@client-ssh:~# sshfs entel@10.4.13:/./test_sftp
+root@client-ssh:~# cd test_sftp
+root@client-ssh:~/test_sftp# ls
+files
+root@client-ssh:~/test_sftp# cd files
+root@client-ssh:~/test_sftp/files# ls
+id_rsa.pub  prueba1.txt  prueba2.txt  prueba3.txt  sftp_cliente.txt
+root@client-ssh:~/test_sftp/files# exit
+exit
+
+Script terminado en 2025-05-12 18:46:11+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
+
+-------------------------------------------------------------------------------------------------------
