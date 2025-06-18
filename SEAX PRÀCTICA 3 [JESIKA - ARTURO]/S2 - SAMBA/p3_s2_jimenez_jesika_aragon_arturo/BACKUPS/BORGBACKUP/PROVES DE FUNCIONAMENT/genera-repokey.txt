@@ -1,0 +1,25 @@
+Script iniciado en 2025-05-20 15:47:10+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+[?2004hroot@backup:~# exittreeexittreeexitsystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Creboot[Ksystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Creboot[K[1Pclearnano ../etc/fstab [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[5Pmount ../mnt/[8Pclearnano ../sbin/mount.vboxsf [C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[6Pmount ../mnt/shared/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Ksystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Creboot[Kxrdb -merge ~/.Xresources [C[C[C[C[C[C[C[C[C[C[C[C[C[C[Creboot[Ksystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Kmount ../mnt/shared/[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cnano ../sbin/mount.vboxsf [C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[Kmount ../mnt/nano ../etc/fstab [C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[Krebootsystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Ktreeexittreeexit[Kexittreeexittreeexitsystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Creboot[K[1Pclearrebootsystemctl status ssh[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[Ktreeexittreeexit[Kborg export backup/bas[Kckup-borg/ backup/repokey
+[?2004lusage: borg [-V] [-h] [--critical] [--error] [--warning] [--info] [--debug] [--debug-topic TOPIC] [-p] [--iec] [--log-json] [--lock-wait SECONDS]
+            [--bypass-lock] [--show-version] [--show-rc] [--umask M] [--remote-path PATH] [--remote-ratelimit RATE] [--upload-ratelimit RATE]
+            [--remote-buffer UPLOAD_BUFFER] [--upload-buffer UPLOAD_BUFFER] [--consider-part-files] [--debug-profile FILE] [--rsh RSH]
+            <command> ...
+borg: error: argument <command>: invalid choice: 'export' (choose from 'benchmark', 'break-lock', 'check', 'compact', 'config', 'create', 'debug', 'delete', 'diff', 'export-tar', 'extract', 'help', 'info', 'init', 'key', 'list', 'mount', 'prune', 'recreate', 'rename', 'serve', 'umount', 'upgrade', 'with-lock', 'import-tar')
+[?2004hroot@backup:~# borg export backup/backup-borg/ backup/repokey[1@k[C[1@e[1@y[1@ 
+[?2004l[?2004hroot@backup:~# cd backup/repokey [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kcat backup/repokey 
+[?2004lBORG_KEY 02ee5294ddc55af1a1fffa43fd31b1b8c925cfbff246202f2bb0bb79b756df0f
+hqlhbGdvcml0aG2mc2hhMjU2pGRhdGHaAZ5glJM0vwR5dReZU3dmzqadOrXu9VxoIsbtwj
+clSNBhUrPZLfx5b3m+6eNlN7gd2ouMoutjDg0p49AIZnnvHC+1qTkc0AGeTuHNDVIU8oxo
++sobhbboz8ZtsWaRO7LHz9VKkxCL1kKACxvndEgMvlPsNqrqwQiIxCDoPohydqkq4oxcjy
+Tp/zjPpcdoK5noxektbqPgVdNiSkTSSLOhi8blkS3xrnR8v86C0TQY2BAhSECReXaELnLa
+G7F6nUwUSPE7Dr6FROIKy42JG17I7fGk+4Ok2k0CLIAbwZmlmw33M3KglkzkIey42zcpTe
+paFtVHKkYbV4foGan0iGYAPKvJYCjXM6DLKimWM+MJe0rdqKgdchqiMML/1Z6z7aLn5yLv
+FuG0Ehx3D6hKz9ZeGxzwIz6taEkKCTSOvvYvpRtCIrfDgUtTJWd45OLKoQIYOOt8qapWlU
+6sYQsj07PdsZWomnJoEpELnN37XVZWwDAL8Hp+u2O90TwNy/0NM6i40BKsDr36I8f4Sxdv
+dzAjkb7h5n3j99n8fmEZB0jlxlGkaGFzaNoAII3f3NR/J3tqU9hvtsqo5/I6Ys/W2cLT0N
+L7WdejvqM0qml0ZXJhdGlvbnPOAAGGoKRzYWx02gAgHqCKow0UFA1OyLqaSZQlswgYmbsC
+Mh+rDGNHjYDdm5OndmVyc2lvbgE=
+[?2004hroot@backup:~# exit
+[?2004lexit
+
+Script terminado en 2025-05-20 15:48:32+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

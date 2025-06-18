@@ -1,0 +1,15 @@
+Script iniciado en 2025-05-16 23:21:03+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@cliente-samba:~# smbclient -L //10.4.1.3 -U entel
+Password for [WORKGROUP\entel]:
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	HOME            Disk      Carpeta home del usuario
+	SAMBA           Disk      Directorio Samba
+	IPC$            IPC       IPC Service (Samba 4.17.12-Debian)
+	entel           Disk      Home Directories
+
+root@cliente-samba:~# exit
+exit
+
+Script terminado en 2025-05-16 23:21:23+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

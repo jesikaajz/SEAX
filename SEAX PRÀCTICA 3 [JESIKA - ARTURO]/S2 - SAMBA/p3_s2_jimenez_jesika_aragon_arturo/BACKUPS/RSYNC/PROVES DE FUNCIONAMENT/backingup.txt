@@ -1,0 +1,32 @@
+Script iniciado en 2025-05-20 09:38:57+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+
+root@seax2:~# rsync -avz --delete -e ssh /root root@10.0.4.10:/backup/backup-rsync
+
+root@10.4.1.10's password: 
+sending incremental file list
+root/
+root/.bash_history
+root/.bashrc
+root/.lesshst
+root/.profile
+root/.selected_editor
+root/139,445
+root/backingup.txt
+root/prueba2.txt
+root/samba_traffic.pcap
+root/servidor_ssh.pcap
+root/status_samba_server.txt
+root/tcpdump_server.txt
+root/.local/
+root/.local/share/
+root/.local/share/nano/
+root/.ssh/
+root/.ssh/known_hosts
+
+sent 10.359 bytes  received 291 bytes  4.260,00 bytes/sec
+total size is 34.711  speedup is 3,26
+root@seax2:~# exit
+
+exit
+
+Script terminado en 2025-05-20 09:39:32+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

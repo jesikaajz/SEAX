@@ -1,0 +1,19 @@
+Script iniciado en 2025-05-20 09:52:14+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+[?2004hroot@seax2:~# rm samba_traffic.pcap servidor_ssh.pcap 
+[?2004l[?2004hroot@seax2:~# ls
+[?2004l139,445  backingup.txt	prueba2.txt  status_samba_server.txt  tcpdump_server.txt  tree-abans-de-borrar-server.txt  tree-server-samba.txt
+[?2004hroot@seax2:~# tree
+[?2004l.
+├── 139,445
+├── backingup.txt
+├── prueba2.txt
+├── status_samba_server.txt
+├── tcpdump_server.txt
+├── tree-abans-de-borrar-server.txt
+└── tree-server-samba.txt
+
+1 directory, 7 files
+[?2004hroot@seax2:~# exit
+[?2004lexit
+
+Script terminado en 2025-05-20 09:52:35+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

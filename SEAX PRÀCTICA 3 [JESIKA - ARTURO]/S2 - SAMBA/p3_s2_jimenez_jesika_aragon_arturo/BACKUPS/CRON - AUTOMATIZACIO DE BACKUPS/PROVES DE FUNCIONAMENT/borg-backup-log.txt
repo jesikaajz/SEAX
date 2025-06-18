@@ -1,0 +1,21 @@
+/usr/lib/python3.11/getpass.py:91: GetPassWarning: Can not control echo on the terminal.
+Warning: Password input may be echoed.
+Enter passphrase for key /root/backup/backup-borg: 
+can not acquire a passphrase: BORG_PASSPHRASE is not set. BORG_PASSCOMMAND is not set. Interactive password query failed.
+0 B O 0 B C 0 B D 0 N root                                                      Initializing cache transaction: Reading configInitializing cache transaction: Reading chunksInitializing cache transaction: Reading files                                                                                Saving files cacheSaving chunks cacheSaving cache config------------------------------------------------------------------------------
+Repository: /root/backup/backup-borg
+Archive name: auto-2025-05-20
+Archive fingerprint: 1ce8f6f201ca7f5d24f4df833f67d05493577163158a719b487ad97585de9ac8
+Time (start): Tue, 2025-05-20 18:30:02
+Time (end):   Tue, 2025-05-20 18:30:02
+Duration: 0.06 seconds
+Number of files: 32
+Utilization of max. archive size: 0%
+------------------------------------------------------------------------------
+                       Original size      Compressed size    Deduplicated size
+This archive:               58.68 kB             23.79 kB              6.82 kB
+All archives:               96.04 kB             40.92 kB             29.95 kB
+
+                       Unique chunks         Total chunks
+Chunk index:                      33                   60
+------------------------------------------------------------------------------

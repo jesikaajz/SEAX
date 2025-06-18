@@ -1,0 +1,17 @@
+Script iniciado en 2025-05-16 23:30:17+02:00 [TERM="linux" TTY="/dev/pts/0" COLUMNS="160" LINES="50"]
+
+
+root@server-samba:~# nmap -p 139,445 10.4.1.3
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-05-16 23:30 CEST
+Nmap scan report for 10.4.1.3
+Host is up (0.000083s latency).
+
+PORT    STATE SERVICE
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+
+Nmap done: 1 IP address (1 host up) scanned in 0.11 seconds
+root@seax2:~# exit
+exit
+
+Script terminado en 2025-05-16 23:30:40+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

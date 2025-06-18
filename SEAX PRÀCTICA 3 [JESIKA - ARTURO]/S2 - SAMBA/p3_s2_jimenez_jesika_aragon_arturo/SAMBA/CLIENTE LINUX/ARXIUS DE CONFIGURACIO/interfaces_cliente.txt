@@ -1,0 +1,37 @@
+Script iniciado en 2025-05-17 16:32:20+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+
+root@cliente-samba:~# cat /etc/network/interfaces
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+#allow-hotplug enp0s3
+#iface enp0s3 inet dhcp
+# This is an autoconfigured IPv6 interface
+#iface enp0s3 inet6 auto
+
+auto enp0s3
+iface enp0s3 inet static
+	address 192.168.1.101
+	netmask 255.255.255.0
+	gateway 192.168.1.1
+	dns-nameservers 8.8.8.8 1.1.1.1
+
+
+auto enp0s8
+iface enp0s8 inet static
+	address 10.4.1.2
+	netmask 255.255.255.0
+	network 10.4.1.0
+	broadcast 10.4.1.255
+
+root@cliente-samba:~# exit
+exit
+
+Script terminado en 2025-05-17 16:32:33+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

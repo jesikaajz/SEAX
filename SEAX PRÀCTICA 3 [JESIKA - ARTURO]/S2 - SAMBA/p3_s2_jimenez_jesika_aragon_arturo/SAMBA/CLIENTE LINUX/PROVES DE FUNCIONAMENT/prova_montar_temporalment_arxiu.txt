@@ -1,0 +1,29 @@
+Script iniciado en 2025-05-16 23:22:21+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+
+root@cliente-samba:~# mount -t cifs //10.4.1.3/SAMBA /CompartirSamba -o username=entel,password=letne
+root@cliente-samba:~# ls /CompartirSamba
+fichero_cliente.txt  fichero_servidor.txt
+root@cliente-samba:~# touch /CompartirSamba/test_linux.txt
+root@cliente-samba:~# ls
+fichero_cliente.txt  fichero_servidor.txt  prueba1.txt	prueba2cli.txt
+root@cliente-samba:~# cd /CompartirSamba
+root@cliente-samba:/CompartirSamba# ls
+fichero_cliente.txt  fichero_servidor.txt  test_linux.txt
+root@cliente-samba:/CompartirSamba# rm test_linux
+root@cliente-samba:/CompartirSamba# rm test_linux.txt
+root@cliente-samba:/CompartirSamba# df -h
+S.ficheros       Tamaño Usados  Disp Uso% Montado en
+udev               462M      0  462M   0% /dev
+tmpfs               97M   592K   96M   1% /run
+/dev/sda1          6,7G   3,2G  3,3G  50% /
+tmpfs              481M      0  481M   0% /dev/shm
+tmpfs              5,0M      0  5,0M   0% /run/lock
+shared             476G   288G  189G  61% /mnt/shared
+shared             476G   288G  189G  61% /media/sf_shared
+tmpfs               97M      0   97M   0% /run/user/0
+//10.4.1.3/SAMBA   6,7G   3,3G  3,4G  50% /CompartirSamba
+
+root@cliente-samba:/CompartirSamba# exit
+exit
+
+Script terminado en 2025-05-16 23:24:08+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

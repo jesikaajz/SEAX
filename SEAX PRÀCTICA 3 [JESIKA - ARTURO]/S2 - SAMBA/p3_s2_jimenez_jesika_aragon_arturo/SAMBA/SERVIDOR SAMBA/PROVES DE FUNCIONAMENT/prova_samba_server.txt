@@ -1,0 +1,72 @@
+Script iniciado en 2025-05-16 18:17:53+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-samba:~# systemctl status smbd
+
+● smbd.service - Samba SMB Daemon
+     Loaded: loaded file://server-samba/lib/systemd/system/smbd.service /lib/systemd/system/smbd.service: enabled preset: enabled
+     Active: active (running) since Fri 2025-05-16 17:20:07 CEST; 57min ago
+       Docs: smbd(8) man:smbd
+             man:samba(7) man:samba(7)
+             man:smb.conf(5) man:smb.conf(5)
+    Process: 768 ExecCondition=/usr/share/samba/is-configured smb (code=exited, status=0/SUCCESS)
+    Process: 776 ExecStartPre=/usr/share/samba/update-apparmor-samba-profile (code=exited, status=0/SUCCESS)
+    Process: 816 ExecReload=/bin/kill -HUP $MAINPID (code=exited, status=0/SUCCESS)
+   Main PID: 801 (smbd)
+     Status: "smbd: ready to serve connections..."
+      Tasks: 245m (limit: 1108)
+     Memory: 15.1M
+        CPU: 786ms
+     CGroup: /system.slice/smbd.service
+             ├─801 /usr/sbin/smbd --foreground --no-process-group
+             ├─807 /usr/sbin/smbd --foreground --no-process-group
+             ├─808 /usr/sbin/smbd --foreground --no-process-group
+             └─895 /usr/sbin/smbd --foreground --no-process-group
+may 16 17:20:07 server-samba systemd[1]: Starting smbd.service - Samba SMB Daemon...
+may 16 17:20:07 server-samba systemd[1]: Started smbd.service - Samba SMB Daemon.
+may 16 17:20:07 server-samba systemd[1]: Reloading smbd.service - Samba SMB Daemon...
+may 16 17:20:08 server-samba systemd[1]: Reloaded smbd.service - Samba SMB Daemon.
+may 16 17:21:01 server-samba smbd[891]: pam_unix(samba:session): session opened for user entel(uid=1000) by (uid=0)
+may 16 17:21:11 server-samba smbd[891]: pam_unix(samba:session): session closed for user entel
+may 16 17:22:09 server-samba smbd[894]: pam_unix(samba:session): session opened for user entel(uid=1000) by (uid=0)
+may 16 17:22:20 server-samba smbd[894]: pam_unix(samba:session): session closed for user entel
+may 16 17:22:23 v smbd[895]: pam_unix(samba:session): session opened for user entel(uid=1000) by (uid=0)
+
+root@vserver-samba:~# systemctl status nmbd
+
+●nmbd.service - Samba NMB Daemon
+     Loaded: loaded file://server-samba/lib/systemd/system/nmbd.service /lib/systemd/system/nmbd.service enabled preset: enabled
+     Active: active (running)since Fri 2025-05-16 17:20:07 CEST; 58min ago
+       Docs: man:nmbd(8) man:nmbd(8)
+             man:samba(7) man:samba(7)
+             man:smb.conf(5) man:smb.conf(5)
+    Process: 680 ExecCondition=/usr/share/samba/is-configured nmb (code=exited, status=0/SUCCESS)
+   Main PID: 755 (nmbd)
+     Status: "nmbd: ready to serve connections..."
+      Tasks: 245m (limit: 1108)
+     Memory: 13.1M
+        CPU: 619ms
+     CGroup: /system.slice/nmbd.service
+             └─755 /usr/sbin/nmbd --foreground --no-process-group
+
+may 16 17:20:05 server-samba systemd[1]: Starting nmbd.service - Samba NMB Daemon...
+may 16 17:20:07 server-samba systemd[1]: Started nmbd.service - Samba NMB Daemon.
+
+root@server-samba:~# tail -f /var/log/samba/log.smbd
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+[2025/05/16 14:01:43.613215,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+[2025/05/16 16:43:05.102002,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+[2025/05/16 17:20:07.531033,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+^C
+root@server-samba:~# ls -ld /home/entel
+drwx------ 3 entel entel 4096 may 16 14:15 /home/entel
+root@server-samba:~# ls -ld /home/CompartirSamba
+drwxrwx--- 2 root sambashare 4096 may 16 14:09 /CompartirSamba
+root@server-samba:~# exit
+exit
+
+Script terminado en 2025-05-16 18:19:19+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

@@ -1,0 +1,8 @@
+Script iniciado en 2025-05-16 23:27:17+02:00 [TERM="linux" TTY="/dev/pts/0" COLUMNS="160" LINES="50"]
+root@server-samba:~# cd /home/entel
+root@server-samba:/home/entel# ls
+prueba.txt
+root@server-samba:/home/entel# exit
+exit
+
+Script terminado en 2025-05-16 23:27:23+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

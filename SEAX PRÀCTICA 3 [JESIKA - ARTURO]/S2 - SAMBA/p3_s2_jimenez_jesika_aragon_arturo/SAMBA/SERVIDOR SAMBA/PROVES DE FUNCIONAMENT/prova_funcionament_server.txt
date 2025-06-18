@@ -1,0 +1,201 @@
+Script iniciado en 2025-05-17 16:09:50+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+root@server-samba:~# systemctl status smbd
+
+●smbd.service - Samba SMB Daemon
+     Loaded: loaded file://server-samba/lib/systemd/system/smbd.service /lib/systemd/system/smbd.service enabled preset:enabled
+     Active: active (running) since Sat 2025-05-17 16:03:42 CEST; 6min ago
+       Docs: man:smbd(8) man:smbd(8)
+             man:samba(7) man:samba(7)
+	     man:smb.conf(5) man:smb.conf(5)
+    Process: 765 ExecCondition=/usr/share/samba/is-configured smb (code=exited, status=0/SUCCESS)
+    Process: 772 ExecStartPre=/usr/share/samba/update-apparmor-samba-profile (code=exited, status=0/SUCCESS)
+   Main PID: 800 (smbd)
+     Status: "smbd: ready to serve connections..."
+      Tasks: 245m (limit: 1108)
+     Memory: 21.8M
+        CPU: 2.772s
+     CGroup: /system.slice/smbd.service
+             ├─800 /usr/sbin/smbd --foreground --no-process-group
+             ├─829 /usr/sbin/smbd --foreground --no-process-group
+             ├─830 /usr/sbin/smbd --foreground --no-process-group
+             ├─861 /usr/sbin/smbd --foreground --no-process-group
+             └─886 /usr/sbin/smbd --foreground --no-process-group
+
+may 17 16:03:42 server-samba systemd[1]: Starting smbd.service - Samba SMB Daemon...
+may 17 16:03:42 server-samba systemd[1]: Started smbd.service - Samba SMB Daemon.
+may 17 16:03:49 server-samba smbd[861]: pam_unix(samba:session): session opened for user entel(uid=1000) by (uid=0)
+may 17 16:06:26 server-samba smbd[886]: pam_unix(samba:session): session opened for user entel(uid=1000) by (uid=0)
+
+
+root@server-samba:~# systemctl status nmbd
+
+● nmbd.service - Samba NMB Daemon
+     Loaded: loaded file://seax2/lib/systemd/system/nmbd.service /lib/systemd/system/nmbd.service enabled preset: enabled
+     Active: active (running)since Sat 2025-05-17 16:03:42 CEST; 6min ago
+       Docs: man:nmbd(8) man:nmbd(8)
+             man:samba(7) man:samba(7)
+             man:smb.conf(5) man:smb.conf(5)
+    Process: 681 ExecCondition=/usr/share/samba/is-configured nmb (code=exited, status=0/SUCCESS)
+   Main PID: 751 (nmbd)
+     Status: "nmbd: ready to serve connections..."
+      Tasks: 245m (limit: 1108)
+     Memory: 13.0M
+        CPU: 289ms
+     CGroup: /system.slice/nmbd.service
+             └─751 /usr/sbin/nmbd --foreground --no-process-group
+
+may 17 16:03:41 seax2 systemd[1]: Starting nmbd.service - Samba NMB Daemon...
+may 17 16:03:42 seax2 systemd[1]: Started nmbd.service - Samba NMB Daemon.
+16:06:29 2025
+
+root@server-samba:~# smbstatus
+
+Samba version 4.17.12-Debian
+PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
+----------------------------------------------------------------------------------------------------------------------------------------
+886     entel        entel        192.168.1.134 (ipv4:192.168.1.134:49197)  SMB3_11           AES-128-GCM          partial(AES-128-GMAC)
+861     entel        entel        10.4.1.2 (ipv4:10.4.1.2:42792)            SMB3_00           AES-128-CCM          partial(AES-128-CMAC)
+934     entel        entel        192.168.1.134 (ipv4:192.168.1.134:55646)  SMB3_11           AES-128-GCM          partial(AES-128-GMAC)
+
+Service      pid     Machine       Connected at                     Encryption   Signing     
+---------------------------------------------------------------------------------------------
+SAMBA        861     10.4.1.2      sáb may 17 16:03:49 2025 CEST   AES-128-CCM  AES-128-CMAC
+SAMBA        886     192.168.1.134 sáb may 17 16:06:27 2025 CEST   AES-128-GCM  AES-128-GMAC
+IPC$         886     192.168.1.134 sáb may 17 16:12:47 2025 CEST   AES-128-GCM  AES-128-GMAC
+HOME         861     10.4.1.2      sáb may 17 16:03:49 2025 CEST   AES-128-CCM  AES-128-CMAC
+IPC$         934     192.168.1.134 sáb may 17 16:11:35 2025 CEST   AES-128-GCM  AES-128-GMAC
+IPC$         861     10.4.1.2      sáb may 17 16:03:49 2025 CEST   AES-128-CCM  AES-128-CMAC
+
+
+Locked files:
+Pid          User(ID)   DenyMode   Access      R/W        Oplock           SharePath   Name   Time
+--------------------------------------------------------------------------------------------------
+886          1000       DENY_NONE  0x100081    RDONLY     NONE             /CompartirSamba   .   Sat May 17 16:12:47 2025
+886          1000       DENY_NONE  0x100081    RDONLY     NONE             /CompartirSamba   .   Sat May 17 16:12:47 2025
+886          1000       DENY_NONE  0x100081    RDONLY     NONE             /CompartirSamba   .   Sat May 17 16:11:41 2025
+
+root@server-samba:~# ss -tp
+State        Recv-Q         Send-Q                 Local Address:Port                          Peer Address:Port         Process                                
+ESTAB        0              0                      192.168.1.141:microsoft-ds                 192.168.1.134:55646         users:(("smbd",pid=934,fd=34))        
+ESTAB        0              0                           10.4.1.3:microsoft-ds                      10.4.1.2:42792         users:(("smbd",pid=861,fd=33))        
+ESTAB        0              0                      192.168.1.141:microsoft-ds                 192.168.1.134:49197         users:(("smbd",pid=886,fd=33))        
+
+root@server-samba:~# ss -tlp
+State      Recv-Q     Send-Q           Local Address:Port                   Peer Address:Port     Process                                                       
+LISTEN     0          50                     0.0.0.0:netbios-ssn                 0.0.0.0:*         users:(("smbd",pid=800,fd=31))                               
+LISTEN     0          128                    0.0.0.0:ssh                         0.0.0.0:*         users:(("sshd",pid=711,fd=3))                                
+LISTEN     0          4096                   0.0.0.0:sunrpc                      0.0.0.0:*         users:(("rpcbind",pid=420,fd=4),("systemd",pid=1,fd=32))     
+LISTEN     0          50                     0.0.0.0:microsoft-ds                0.0.0.0:*         users:(("smbd",pid=800,fd=30))                               
+LISTEN     0          50                        [::]:netbios-ssn                    [::]:*         users:(("smbd",pid=800,fd=29))                               
+LISTEN     0          128                       [::]:ssh                            [::]:*         users:(("sshd",pid=711,fd=4))                                
+LISTEN     0          4096                      [::]:sunrpc                         [::]:*         users:(("rpcbind",pid=420,fd=6),("systemd",pid=1,fd=34))     
+LISTEN     0          50                        [::]:microsoft-ds                   [::]:*         users:(("smbd",pid=800,fd=28))    
+                          
+root@server-samba:~# ss -tulnp
+Netid     State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process                                                       
+udp       UNCONN     0          0                    0.0.0.0:68                  0.0.0.0:*         users:(("dhclient",pid=584,fd=7))                            
+udp       UNCONN     0          0                    0.0.0.0:111                 0.0.0.0:*         users:(("rpcbind",pid=420,fd=5),("systemd",pid=1,fd=33))     
+udp       UNCONN     0          0              192.168.1.255:137                 0.0.0.0:*         users:(("nmbd",pid=751,fd=21))                               
+udp       UNCONN     0          0              192.168.1.141:137                 0.0.0.0:*         users:(("nmbd",pid=751,fd=20))                               
+udp       UNCONN     0          0                 10.4.1.255:137                 0.0.0.0:*         users:(("nmbd",pid=751,fd=16))                               
+udp       UNCONN     0          0                   10.4.1.3:137                 0.0.0.0:*         users:(("nmbd",pid=751,fd=15))                               
+udp       UNCONN     0          0                    0.0.0.0:137                 0.0.0.0:*         users:(("nmbd",pid=751,fd=13))                               
+udp       UNCONN     0          0              192.168.1.255:138                 0.0.0.0:*         users:(("nmbd",pid=751,fd=23))                               
+udp       UNCONN     0          0              192.168.1.141:138                 0.0.0.0:*         users:(("nmbd",pid=751,fd=22))                               
+udp       UNCONN     0          0                 10.4.1.255:138                 0.0.0.0:*         users:(("nmbd",pid=751,fd=18))                               
+udp       UNCONN     0          0                   10.4.1.3:138                 0.0.0.0:*         users:(("nmbd",pid=751,fd=17))                               
+udp       UNCONN     0          0                    0.0.0.0:138                 0.0.0.0:*         users:(("nmbd",pid=751,fd=14))                               
+udp       UNCONN     0          0                       [::]:111                    [::]:*         users:(("rpcbind",pid=420,fd=7),("systemd",pid=1,fd=35))     
+tcp       LISTEN     0          50                   0.0.0.0:139                 0.0.0.0:*         users:(("smbd",pid=800,fd=31))                               
+tcp       LISTEN     0          128                  0.0.0.0:22                  0.0.0.0:*         users:(("sshd",pid=711,fd=3))                                
+tcp       LISTEN     0          4096                 0.0.0.0:111                 0.0.0.0:*         users:(("rpcbind",pid=420,fd=4),("systemd",pid=1,fd=32))     
+tcp       LISTEN     0          50                   0.0.0.0:445                 0.0.0.0:*         users:(("smbd",pid=800,fd=30))                               
+tcp       LISTEN     0          50                      [::]:139                    [::]:*         users:(("smbd",pid=800,fd=29))                               
+tcp       LISTEN     0          128                     [::]:22                     [::]:*         users:(("sshd",pid=711,fd=4))                                
+tcp       LISTEN     0          4096                    [::]:111                    [::]:*         users:(("rpcbind",pid=420,fd=6),("systemd",pid=1,fd=34))     
+tcp       LISTEN     0          50                      [::]:445                    [::]:*         users:(("smbd",pid=800,fd=28))                               
+
+
+root@server-samba:~# tcpdump -i enp0s8 port 445 or port 139 -w samba_traffic2.pcap
+
+tcpdump: listening on enp0s8, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+^C54 packets captured
+54 packets received by filter
+0 packets dropped by kernel
+
+root@server-samba:~# tcpdump -r samba_traffic2.pcap
+
+reading from file samba_traffic2.pcap, link-type EN10MB (Ethernet), snapshot length 262144
+16:15:03.477315 IP 10.4.1.2.42792 > 10.4.1.3.microsoft-ds: Flags [P.], seq 2115251922:2115251994, ack 1177856958, win 501, options [nop,nop,TS val 1848492429 ecr 3095212308], length 72
+16:15:03.478194 IP 10.4.1.3.microsoft-ds > 10.4.1.2.42792: Flags [P.], seq 1:73, ack 72, win 501, options [nop,nop,TS val 3095273750 ecr 1848492429], length 72
+16:15:03.479853 IP 10.4.1.2.42792 > 10.4.1.3.microsoft-ds: Flags [.], ack 73, win 501, options [nop,nop,TS val 1848492432 ecr 3095273750], length 0
+16:15:11.326740 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [S], seq 1955403135, win 64240, options [mss 1460,sackOK,TS val 1848500279 ecr 0,nop,wscale 7], length 0
+16:15:11.326884 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [S.], seq 815551718, ack 1955403136, win 65160, options [mss 1460,sackOK,TS val 3095281599 ecr 1848500279,nop,wscale 7], length 0
+16:15:11.328175 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1, win 502, options [nop,nop,TS val 1848500281 ecr 3095281599], length 0
+16:15:11.340727 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1:229, ack 1, win 502, options [nop,nop,TS val 1848500293 ecr 3095281599], length 228
+16:15:11.340830 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [.], ack 229, win 508, options [nop,nop,TS val 3095281613 ecr 1848500293], length 0
+16:15:11.541541 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1:289, ack 229, win 508, options [nop,nop,TS val 3095281814 ecr 1848500293], length 288
+16:15:11.543021 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 289, win 501, options [nop,nop,TS val 1848500495 ecr 3095281814], length 0
+16:15:11.740936 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 229:395, ack 289, win 501, options [nop,nop,TS val 1848500693 ecr 3095281814], length 166
+16:15:11.741035 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [.], ack 395, win 507, options [nop,nop,TS val 3095282013 ecr 1848500693], length 0
+16:15:17.101450 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 289:512, ack 395, win 507, options [nop,nop,TS val 3095287373 ecr 1848500693], length 223
+16:15:17.102496 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 512, win 501, options [nop,nop,TS val 1848506055 ecr 3095287373], length 0
+16:15:17.558632 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 395:895, ack 512, win 501, options [nop,nop,TS val 1848506511 ecr 3095287373], length 500
+16:15:17.558733 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [.], ack 895, win 504, options [nop,nop,TS val 3095287831 ecr 1848506511], length 0
+16:15:17.576706 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 512:617, ack 895, win 504, options [nop,nop,TS val 3095287849 ecr 1848506511], length 105
+16:15:17.578038 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 617, win 501, options [nop,nop,TS val 1848506531 ecr 3095287849], length 0
+16:15:17.595603 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 895:1053, ack 617, win 501, options [nop,nop,TS val 1848506548 ecr 3095287849], length 158
+16:15:17.597194 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 617:753, ack 1053, win 503, options [nop,nop,TS val 3095287869 ecr 1848506548], length 136
+16:15:17.603953 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1053:1261, ack 753, win 501, options [nop,nop,TS val 1848506556 ecr 3095287869], length 208
+16:15:17.604885 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 753:882, ack 1261, win 502, options [nop,nop,TS val 3095287877 ecr 1848506556], length 129
+16:15:17.610724 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1261:1385, ack 882, win 501, options [nop,nop,TS val 1848506564 ecr 3095287877], length 124
+16:15:17.611116 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 882:1006, ack 1385, win 502, options [nop,nop,TS val 3095287883 ecr 1848506564], length 124
+16:15:17.621733 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1385:1543, ack 1006, win 501, options [nop,nop,TS val 1848506574 ecr 3095287883], length 158
+16:15:17.622854 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1006:1142, ack 1543, win 501, options [nop,nop,TS val 3095287895 ecr 1848506574], length 136
+16:15:17.672926 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1142, win 501, options [nop,nop,TS val 1848506624 ecr 3095287895], length 0
+16:15:17.762282 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1543:1615, ack 1142, win 501, options [nop,nop,TS val 1848506715 ecr 3095287895], length 72
+16:15:17.762621 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1142:1214, ack 1615, win 501, options [nop,nop,TS val 3095288035 ecr 1848506715], length 72
+16:15:17.763476 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1214, win 501, options [nop,nop,TS val 1848506716 ecr 3095288035], length 0
+16:15:22.722651 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1615:1687, ack 1214, win 501, options [nop,nop,TS val 1848511675 ecr 3095288035], length 72
+16:15:22.722924 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1214:1286, ack 1687, win 501, options [nop,nop,TS val 3095292995 ecr 1848511675], length 72
+16:15:22.723879 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1286, win 501, options [nop,nop,TS val 1848511677 ecr 3095292995], length 0
+16:15:27.679819 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1687:1759, ack 1286, win 501, options [nop,nop,TS val 1848516632 ecr 3095292995], length 72
+16:15:27.680603 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1286:1358, ack 1759, win 501, options [nop,nop,TS val 3095297953 ecr 1848516632], length 72
+16:15:27.681417 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1358, win 501, options [nop,nop,TS val 1848516634 ecr 3095297953], length 0
+16:15:32.744770 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1759:1831, ack 1358, win 501, options [nop,nop,TS val 1848521698 ecr 3095297953], length 72
+16:15:32.745023 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1358:1430, ack 1831, win 501, options [nop,nop,TS val 3095303017 ecr 1848521698], length 72
+16:15:32.746264 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1430, win 501, options [nop,nop,TS val 1848521699 ecr 3095303017], length 0
+16:15:37.699937 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1831:1903, ack 1430, win 501, options [nop,nop,TS val 1848526652 ecr 3095303017], length 72
+16:15:37.700346 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1430:1502, ack 1903, win 501, options [nop,nop,TS val 3095307972 ecr 1848526652], length 72
+16:15:37.701224 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1502, win 501, options [nop,nop,TS val 1848526654 ecr 3095307972], length 0
+16:15:42.652123 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1903:1975, ack 1502, win 501, options [nop,nop,TS val 1848531605 ecr 3095307972], length 72
+16:15:42.652410 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1502:1574, ack 1975, win 501, options [nop,nop,TS val 3095312924 ecr 1848531605], length 72
+16:15:42.653362 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1574, win 501, options [nop,nop,TS val 1848531606 ecr 3095312924], length 0
+16:15:47.712225 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 1975:2047, ack 1574, win 501, options [nop,nop,TS val 1848536665 ecr 3095312924], length 72
+16:15:47.713007 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1574:1646, ack 2047, win 501, options [nop,nop,TS val 3095317985 ecr 1848536665], length 72
+16:15:47.714050 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1646, win 501, options [nop,nop,TS val 1848536667 ecr 3095317985], length 0
+16:15:52.664206 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 2047:2119, ack 1646, win 501, options [nop,nop,TS val 1848541617 ecr 3095317985], length 72
+16:15:52.665034 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1646:1718, ack 2119, win 501, options [nop,nop,TS val 3095322937 ecr 1848541617], length 72
+16:15:52.665956 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1718, win 501, options [nop,nop,TS val 1848541619 ecr 3095322937], length 0
+16:15:57.726490 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [P.], seq 2119:2191, ack 1718, win 501, options [nop,nop,TS val 1848546679 ecr 3095322937], length 72
+16:15:57.726814 IP 10.4.1.3.microsoft-ds > 10.4.1.2.59232: Flags [P.], seq 1718:1790, ack 2191, win 501, options [nop,nop,TS val 3095327999 ecr 1848546679], length 72
+16:15:57.728351 IP 10.4.1.2.59232 > 10.4.1.3.microsoft-ds: Flags [.], ack 1790, win 501, options [nop,nop,TS val 1848546681 ecr 3095327999], length 0
+
+root@server-samba:~# tail -f /var/log/samba/log.smbd
+
+[2025/05/17 15:35:12.919909,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+[2025/05/17 15:37:55.916300,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+[2025/05/17 16:03:42.596957,  0] ../../source3/smbd/server.c:1741(main)
+  smbd version 4.17.12-Debian started.
+  Copyright Andrew Tridgell and the Samba Team 1992-2022
+^C
+root@server-samba:~# pdbedit -L
+entel:1000:entel
+root@server-samba:~# exit
+exit
+
+Script terminado en 2025-05-17 16:17:47+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

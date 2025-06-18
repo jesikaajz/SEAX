@@ -1,0 +1,20 @@
+Script iniciado en 2025-05-20 09:41:37+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+[?2004hroot@backup:~# tree
+[?2004l.
+├── backup
+│   └── backup-rsync
+│       └── root
+│           ├── 139,445
+│           ├── backingup.txt
+│           ├── prueba2.txt
+│           ├── samba_traffic.pcap
+│           ├── servidor_ssh.pcap
+│           ├── status_samba_server.txt
+│           └── tcpdump_server.txt
+└── tree-after-backup.txt
+
+4 directories, 8 files
+[?2004hroot@backup:~# exit
+[?2004lexit
+
+Script terminado en 2025-05-20 09:41:44+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

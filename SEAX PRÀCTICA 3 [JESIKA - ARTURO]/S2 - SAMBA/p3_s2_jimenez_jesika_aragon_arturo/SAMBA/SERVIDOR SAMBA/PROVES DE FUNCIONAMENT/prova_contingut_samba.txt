@@ -1,0 +1,8 @@
+Script iniciado en 2025-05-16 23:25:57+02:00 [TERM="linux" TTY="/dev/pts/0" COLUMNS="160" LINES="50"]
+root@server-samba:~# cd /CompartirSamba
+root@server-samba:/CompartirSamba# ls
+fichero_cliente.txt  fichero_servidor.txt
+root@server-samba:/CompartirSamba# exit
+exit
+
+Script terminado en 2025-05-16 23:26:32+02:00 [CÓDIGO_SALIDA_ORDEN="127"]

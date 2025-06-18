@@ -1,0 +1,165 @@
+C:\Users\jvjp3>ipconfig
+
+Configuración IP de Windows
+
+
+Adaptador desconocido Conexión de área local:
+
+   Sufijo DNS específico para la conexión. . :
+   Vínculo: dirección IPv6 local. . . : fe80::ad24:8e45:8893:591d%73
+   Dirección IPv4. . . . . . . . . . . . . . : 10.8.0.5
+   Máscara de subred . . . . . . . . . . . . : 255.255.255.0
+   Puerta de enlace predeterminada . . . . . :
+
+Adaptador de Ethernet Ethernet:
+
+   Estado de los medios. . . . . . . . . . . : medios desconectados
+   Sufijo DNS específico para la conexión. . :
+
+Adaptador de Ethernet Ethernet 2:
+
+   Sufijo DNS específico para la conexión. . :
+   Vínculo: dirección IPv6 local. . . : fe80::dbe1:321e:2aa2:d6d5%4
+   Dirección IPv4. . . . . . . . . . . . . . : 192.168.56.1
+   Máscara de subred . . . . . . . . . . . . : 255.255.255.0
+   Puerta de enlace predeterminada . . . . . :
+
+Adaptador desconocido OpenVPN Connect DCO Adapter:
+
+   Estado de los medios. . . . . . . . . . . : medios desconectados
+   Sufijo DNS específico para la conexión. . :
+
+Adaptador de LAN inalámbrica Conexión de área local* 1:
+
+   Estado de los medios. . . . . . . . . . . : medios desconectados
+   Sufijo DNS específico para la conexión. . :
+
+Adaptador de LAN inalámbrica Conexión de área local* 2:
+
+   Estado de los medios. . . . . . . . . . . : medios desconectados
+   Sufijo DNS específico para la conexión. . :
+
+Adaptador de Ethernet Ethernet 3:
+
+   Estado de los medios. . . . . . . . . . . : medios desconectados
+   Sufijo DNS específico para la conexión. . :
+
+Adaptador de LAN inalámbrica Wi-Fi:
+
+   Sufijo DNS específico para la conexión. . : Home
+   Vínculo: dirección IPv6 local. . . : fe80::6bd:fcad:6e5:aae5%18
+   Dirección IPv4. . . . . . . . . . . . . . : 192.168.1.134
+   Máscara de subred . . . . . . . . . . . . : 255.255.255.0
+   Puerta de enlace predeterminada . . . . . : 192.168.1.1
+
+C:\Users\jvjp3>
+**********************************************************************************************
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Instale la versión más reciente de PowerShell para obtener nuevas características y mejoras. https://aka.ms/PSWindows
+
+PS Z:\> ls
+
+
+    Directorio: Z:\
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        16/05/2025     18:28             32 fichero_cliente.txt
+------        16/05/2025     18:24             33 fichero_servidor.txt
+
+
+PS Z:\>
+**************************************************************************************************
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Instale la versión más reciente de PowerShell para obtener nuevas características y mejoras. https://aka.ms/PSWindows
+
+PS C:\Users\jvjp3> net use
+No se recordarán las nuevas conexiones.
+
+
+Estado       Local     Remoto                    Red
+-------------------------------------------------------------------------------
+Conectado    Z:        \\192.168.1.141\Samba     Microsoft Windows Network
+Se ha completado el comando correctamente.
+
+PS C:\Users\jvjp3> net use Z: /delete
+Hay archivos abiertos y/o búsquedas incompletas de directorios pendientes en la conexión con Z:.
+
+¿Desea continuar la desconexión y forzar el cierre? (S/N) [N]: s
+Z: se ha eliminado.
+
+PS C:\Users\jvjp3> net use Z: \\192.168.1.141\Samba /USER:entel
+Escriba la contraseña de "entel" para conectar a "192.168.1.141":
+Se ha completado el comando correctamente.
+
+PS C:\Users\jvjp3>
+****************************************************************************************
+
+
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\home> pwd
+
+Path
+----
+Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\home
+
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\home> ls
+
+
+    Directorio: \\192.168.1.141\home
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+------        16/05/2025     14:15             37 prueba.txt
+
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\home>
+
+****************************************************************************************
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Instale la versión más reciente de PowerShell para obtener nuevas características y mejoras. https://aka.ms/PSWindows
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\samba> ls
+
+
+    Directorio: \\192.168.1.141\samba
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        16/05/2025     18:28             32 fichero_cliente.txt
+------        16/05/2025     18:24             33 fichero_servidor.txt
+
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\samba>
+****************************************************************************************
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Instale la versión más reciente de PowerShell para obtener nuevas características y mejoras. https://aka.ms/PSWindows
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\entel> ls
+
+
+    Directorio: \\192.168.1.141\entel
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+------        16/05/2025     14:15             37 prueba.txt
+
+
+PS Microsoft.PowerShell.Core\FileSystem::\\192.168.1.141\entel>

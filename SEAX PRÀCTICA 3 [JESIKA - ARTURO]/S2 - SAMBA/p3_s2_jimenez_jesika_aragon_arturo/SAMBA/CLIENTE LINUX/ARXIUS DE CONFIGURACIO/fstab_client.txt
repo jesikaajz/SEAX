@@ -1,0 +1,26 @@
+Script iniciado en 2025-05-16 17:00:06+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+
+root@cliente-samba:~# cat /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sda1 during installation
+UUID=fd388c63-4a27-4c06-91ea-469bcad88806 /               ext4    errors=remount-ro 0       1
+# swap was on /dev/sda5 during installation
+#UUID=6254e940-9676-4551-85e5-2fcb6eadeba7 none            swap    sw              0       0
+/dev/sr0        /media/cdrom0   udf,iso9660 user,noauto     0       0
+shared /mnt/shared vboxsf defaults 0 0
+//10.4.1.3/HOME /HomeSamba cifs credentials=/etc/samba/credentials/samba.cred,vers=3.0,file_mode=0700,dir_mode=0700,uid=entel,gid=entel,nofail 0 0
+//10.4.1.3/SAMBA /CompartirSamba cifs credentials=/etc/samba/credentials/samba.cred,vers=3.0,file_mode=0770,dir_mode=0770,uid=root,gid=sambashare,nofail 0 0
+
+root@cliente-samba:~# exit
+exit
+
+Script terminado en 2025-05-16 17:00:15+02:00 [CÓDIGO_SALIDA_ORDEN="0"]

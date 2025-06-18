@@ -1,0 +1,9 @@
+Script iniciado en 2025-05-20 17:25:45+02:00 [TERM="linux" TTY="/dev/tty1" COLUMNS="160" LINES="50"]
+
+root@backup:~# borg list /backup/backup-borg
+Enter passphrase for key /root/backup/backup-borg: 
+nou-backup                           Tue, 2025-05-20 17:14:38 [c99b54dfb8a5a741e441d51ebc409cf369dfaf161ef973cd8b171db8e23952bd]
+root@backup:~# exit
+exit
+
+Script terminado en 2025-05-20 17:26:20+02:00 [CÓDIGO_SALIDA_ORDEN="0"]
